@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WeradioLive.com - Stream Your Favorite Stations</title>
+<style>
+:root{
+--bg-1: hsl(250, 30%, 8%);
+--bg-2: hsl(250, 35%, 12%);
+--muted: hsl(215, 20%, 65%);
+--card-bg: hsla(250,25%,12%,0.5);
+--accent: hsl(280, 80%, 60%);
+--accent-2: hsl(180, 90%, 55%);
+--listener-bg: rgba(0, 0, 0, 0.6);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+color: hsl(210, 40%, 98%);
+min-height: 100vh;
+padding-bottom: 200px;
+}
+
+.header {
+border-bottom: 1px solid hsla(250, 20%, 20%, 0.5);
+background: hsla(250, 30%, 10%, 0.5);
+backdrop-filter: blur(40px);
+position: sticky; top: 0; z-index: 40;
+}
+
+.header-content {
+max-width: 1200px; margin: 0 auto; padding: 1rem;
+display: flex; align-items: center; gap: 0.75rem;
+justify-content: space-between;
+}
+
+.brand {
+display:flex; align-items:center; gap:0.75rem;
+}
+
+.logo {
+height: 2.5rem; width: 2.5rem; border-radius: 0.5rem;
+background: linear-gradient(135deg, hsl(280, 80%, 60%) 0%, hsl(240, 70%, 50%) 100%);
+display: flex; align-items: center; justify-content: center;
+box-shadow: 0 0 40px hsla(280, 80%, 60%, 0.3);
+}
+
+.header-text h1 { font-size: 1.25rem; font-weight: 700; }
+.header-text p { font-size: 0.75rem; color: var(--muted); }
+
+.logo-image {
+width: 36px;
+height: 36px;
+display: block;
+}
+
+.controls-row {
+display:flex; gap:0.5rem; align-items:center;
+}
+
+.search-input {
+padding: 0.5rem 0.75rem; border-radius: 0.5rem;
+border: 1px solid rgba(255,255,255,0.06);
+background: rgba(255,255,255,0.02);
+color: inherit; min-width: 220px;
+}
+
+.small-toggle {
+padding: 0.5rem 0.75rem; border-radius: 0.5rem;
+border: 1px solid hsla(250, 20%, 20%, 0.5);
+background: var(--card-bg);
+color: hsl(210, 40%, 98%);
+cursor: pointer; font-weight: 600;
+}
+.small-toggle[aria-pressed="true"] { background: var(--accent); box-shadow: 0 0 30px rgba(128,0,255,0.12); color: #0b0710; }
+
+.main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+
+.section-header { margin-bottom: 1rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.section-header h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0; }
+.section-header p { color: var(--muted); font-size: 0.875rem; }
+
+.stations-grid {
+display: grid;
+grid-template-columns: repeat(8, 1fr);
+gap: 1rem;
+}
+
+.navigation-buttons {
+display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;
+}
+.nav-button {
+padding: 0.6rem 1rem; border-radius: 0.5rem;
+border: 1px solid hsla(250, 20%, 20%, 0.5);
+background: var(--card-bg);
+backdrop-filter: blur(8px);
+color: hsl(210, 40%, 98%);
+cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+font-weight: 600;
+}
+.nav-button:hover:not(:disabled) {
+background: var(--accent);
+box-shadow: 0 0 20px hsla(280, 80%, 60%, 0.3);
+transform: translateY(-2px);
+}
+.nav-button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.station-card {
+border: 1px solid hsla(250, 20%, 20%, 0.5);
+background: var(--card-bg);
+backdrop-filter: blur(8px);
+border-radius: 0.75rem; overflow: hidden;
+transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+cursor: pointer; display:flex; flex-direction:column;
+position: relative;
+}
+.station-card:hover { transform: translateY(-4px); box-shadow: 0 0 40px hsla(280, 80%, 60%, 0.12); background: rgba(255,255,255,0.02); }
+
+.station-image-container { position: relative; padding-bottom: 100%; overflow: hidden; }
+.station-image {
+position: absolute; inset: 0; width: 100%; height: 100%;
+object-fit: cover; transition: transform 0.5s;
+}
+.station-card:hover .station-image { transform: scale(1.06); }
+
+.image-overlay {
+position: absolute; inset: 0;
+background: linear-gradient(to top, rgba(8,7,12,0.9), rgba(8,7,12,0.35) 50%, transparent);
+opacity: 0.7; transition: opacity 0.3s;
+}
+.station-card:hover .image-overlay { opacity: 0.9; }
+
+.card-actions {
+position:absolute; top: 0.6rem; right: 0.6rem; display:flex; gap:0.5rem;
+}
+.icon-button {
+width:2.4rem; height:2.4rem; border-radius:50%; display:flex; align-items:center; justify-content:center;
+background: rgba(0,0,0,0.45); border: 1px solid hsla(0,0%,100%,0.04); color: white; cursor:pointer;
+}
+.fav-button[aria-pressed="true"] { background: linear-gradient(90deg,var(--accent), #ff8ea3); color: #0b0710; box-shadow: 0 0 12px rgba(255,100,200,0.12); }
+
+.play-button {
+position: absolute; bottom: 0.9rem; right: 0.9rem;
+width: 3rem; height: 3rem; border-radius: 50%;
+border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.play-button.playing { background: var(--accent-2); color: hsl(250, 30%, 8%); box-shadow: 0 0 40px hsla(280, 80%, 60%, 0.3); }
+.play-button:not(.playing) { background: var(--accent); color: white; }
+.station-card:hover .play-button { transform: scale(1.05); box-shadow: 0 0 20px hsla(280, 80%, 60%, 0.2); }
+.play-button svg { width: 1.25rem; height: 1.25rem; }
+
+.station-info { padding: 0.85rem; }
+.station-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.station-genre { font-size: 0.8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Listener count badge */
+.listener-count {
+position: absolute;
+top: 0.6rem;
+left: 0.6rem;
+background: var(--listener-bg);
+color: white;
+padding: 0.25rem 0.5rem;
+border-radius: 1rem;
+font-size: 0.75rem;
+font-weight: 600;
+display: flex;
+align-items: center;
+gap: 0.25rem;
+z-index: 2;
+}
+.listener-count::before {
+content: "•";
+color: #4ade80;
+font-size: 1.2rem;
+animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.audio-player {
+position: fixed; bottom: 0; left: 0; right: 0;
+background: hsla(250, 25%, 12%, 0.98);
+backdrop-filter: blur(40px);
+border-top: 1px solid hsl(250, 20%, 20%);
+padding: 0.9rem; z-index: 50; display: none;
+}
+.audio-player.active { display: block; }
+
+.audio-player-content {
+max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 1rem;
+}
+.player-controls { display: flex; align-items: center; gap: 0.6rem; }
+
+.control-button {
+width: 2.6rem; height: 2.6rem; border-radius: 8px;
+background: var(--accent); color: white;
+border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+transition: all 0.2s;
+}
+.control-button:hover { transform: translateY(-2px); }
+
+.player-info { flex: 1; min-width: 0; }
+.now-playing { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.25rem; }
+.station-name-player { font-size: 1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.volume-control { display: flex; align-items: center; gap: 0.5rem; }
+.volume-button {
+background: none; border: none; color: var(--muted);
+cursor: pointer; padding: 0.5rem; display: flex; align-items: center; transition: color 0.2s;
+}
+.volume-button:hover { color: white; }
+.volume-button svg { width: 1.25rem; height: 1.25rem; }
+
+.volume-slider {
+width: 100px; height: 6px; background: hsla(250, 20%, 20%, 1);
+border-radius: 3px; position: relative; cursor: pointer;
+}
+.volume-fill {
+height: 100%; background: var(--accent);
+border-radius: 3px; transition: width 0.1s;
+}
+
+.visually-hidden { position:absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+
+.ad-slider-wrapper {
+position: fixed;
+bottom: 78px;
+left: 0;
+right: 0;
+z-index: 45;
+display: none;
+}
+.ad-slider-wrapper.active {
+display: block;
+}
+.ad-slider-container {
+max-width: 1200px;
+margin: 0 auto;
+height: 160px;
+background: var(--card-bg);
+border-radius: 0.5rem;
+overflow: hidden;
+position: relative;
+}
+.ad-slider-track {
+display: flex;
+height: 100%;
+transition: transform 0.5s ease-in-out;
+}
+.ad-slide {
+flex: 0 0 100%;
+height: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0 1rem;
+}
+.ad-slide a {
+display: flex;
+width: 100%;
+height: 100%;
+align-items: center;
+justify-content: center;
+text-decoration: none;
+color: var(--muted);
+}
+.ad-slide img {
+max-height: 80%;
+width: auto;
+max-width: 100%;
+object-fit: contain;
+}
+.ad-slide a:hover {
+background: rgba(255,255,255,0.05);
+}
+
+.site-footer {
+background: var(--bg-1);
+color: var(--muted);
+padding: 3rem 1rem;
+margin-top: 3rem;
+font-size: 0.875rem;
+border-top: 1px solid hsla(250, 20%, 20%, 0.5);
+}
+.footer-content {
+max-width: 1200px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 2rem;
+margin-bottom: 2rem;
+}
+.footer-column h3 {
+color: hsl(210, 40%, 98%);
+font-size: 1rem;
+margin-bottom: 1rem;
+}
+.footer-column p, .footer-column a {
+color: var(--muted);
+text-decoration: none;
+line-height: 1.6;
+}
+.footer-column a:hover {
+color: var(--accent);
+text-decoration: underline;
+}
+.social-links {
+display: flex;
+gap: 1rem;
+margin-top: 1rem;
+}
+.social-links a {
+display: inline-block;
+transition: transform 0.2s, color 0.2s;
+}
+.social-links a:hover {
+transform: translateY(-2px);
+color: white;
+}
+.social-links svg {
+width: 1.25rem;
+height: 1.25rem;
+}
+.footer-bottom {
+max-width: 1200px;
+margin: 0 auto;
+padding-top: 2rem;
+border-top: 1px solid hsla(250, 20%, 20%, 0.5);
+text-align: center;
+font-size: 0.8rem;
+}
+
+@media (max-width: 1024px) {
+.stations-grid { grid-template-columns: repeat(6, 1fr); }
+}
+@media (max-width: 768px) {
+.stations-grid { grid-template-columns: repeat(4, 1fr); }
+.volume-control { display: none; }
+.audio-player-content { gap: 0.5rem; }
+.header-content { padding: 0.75rem; }
+.ad-slider-wrapper { bottom: 64px; padding: 0 0.75rem }
+}
+
+@media (max-width: 420px) {
+.stations-grid { grid-template-columns: repeat(2, 1fr); }
+.search-input { min-width: 120px; }
+.header-content { flex-direction: column; align-items:stretch; gap:0.5rem; }
+.controls-row { justify-content: flex-end; }
+}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="header-content">
+<div class="brand">
+<div class="logo" aria-hidden="true">
+<img src="public/images/weradio.png" alt="Logo" class="logo-image" />
+</div>
+<div class="header-text">
+<h1>WeradioLive.com</h1>
+<p>Stream Your Favorite Stations</p>
+</div>
+</div>
+<div class="controls-row" role="region" aria-label="Search and filters">
+<input id="searchInput" class="search-input" type="search" placeholder="Search stations" aria-label="Search stations">
+<button id="favFilterBtn" class="small-toggle" aria-pressed="false" title="Show favorites only">♥ Favorites</button>
+</div>
+</div>
+</header>
+
+<main class="main">
+<div class="section-header">
+<div>
+<h2>Featured Stations</h2>
+<p>Discover and enjoy radio stations from around the world</p>
+</div>
+<div style="display:flex; gap:0.5rem; align-items:center;">
+<div style="color:var(--muted); font-size:0.9rem;">Showing <span id="visibleCount">0</span> stations</div>
+</div>
+</div>
+
+<div class="stations-grid" id="stationsGrid" aria-live="polite"></div>
+
+<div class="navigation-buttons" aria-label="Stations pagination">
+<button class="nav-button" id="prevBtn" disabled>Previous</button>
+<button class="nav-button" id="nextBtn">Next</button>
+</div>
+</main>
+
+<footer class="site-footer">
+<div class="footer-content">
+<div class="footer-column">
+<h3>WeradioLive.com</h3>
+<p>Your portal to the sounds of the world. Tune in to thousands of radio stations for free.</p>
+</div>
+<div class="footer-column">
+<h3>Contact Us</h3>
+<p>For support or inquiries, please email us at:</p>
+<a href="mailto:contact@weradiolive.example.com">contact@weradiolive.example.com</a>
+</div>
+<div class="footer-column">
+<h3>Follow Us</h3>
+<p>Stay connected on social media:</p>
+<div class="social-links">
+<a href="#" aria-label="Twitter">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+</a>
+<a href="#" aria-label="Facebook">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4z"/></svg>
+</a>
+<a href="#" aria-label="Instagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.217.598 1.77.938 1.144.673 1.833 1.91.962 3.821h-2.14c-.722-1.353-2.138-2.043-3.69-2.043-3.033 0-4.636 2.42-4.636 5.432 0 3.012 1.603 5.433 4.636 5.433 1.552 0 2.968-.69 3.69-2.043h2.14c.87 1.91.182 3.148-.962 3.821-.553.34-1.11.684-1.77.938-.638.248-1.363.415-2.428.465-1.066.05-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.217-2.428-.465-.66-.254-1.217-.598-1.77-.938-1.144-.673-1.833-1.91-.962-3.821h2.14c.722 1.353 2.138 2.043 3.69 2.043 3.033 0 4.636-2.42 4.636-5.433 0-3.012-1.603-5.432-4.636-5.432-1.552 0-2.968.69-3.69-2.043H2.213c-.87-1.91-.182-3.148.962-3.821.553.34 1.11-.684 1.77-.938.638.248 1.363.415 2.428.465C8.944 2.01 9.283 2 12 2z"/></svg>
+</a>
+</div>
+</div>
+</div>
+<div class="footer-bottom">
+&copy; 2024 WeradioLive. All Rights Reserved.
+</div>
+</footer>
+
+<div class="ad-slider-wrapper" id="adSliderWrapper">
+<div class="ad-slider-container">
+<div class="ad-slider-track" id="adSliderTrack">
+<div class="ad-slide">
+<a href="https://zedmobile.co.zm/dstv-bundles/" target="_blank" rel="noopener noreferrer">
+<img src="public/images/adverts/Etsy7.png" alt="Advertisement 1">
+</a>
+</div>
+<div class="ad-slide">
+<a href="https://ovine.nyalazi.com/" target="_blank" rel="noopener noreferrer">
+<img src="public/images/adverts/Etsy4.png" alt="Advertisement 2">
+</a>
+</div>
+<div class="ad-slide">
+<a href="https://ovine.nyalazi.com/" target="_blank" rel="noopener noreferrer">
+<img src="public/images/adverts/Etsy6.png" alt="Advertisement 2">
+</a>
+</div>
+<div class="ad-slide">
+<a href="https://ovine.nyalazi.com/" target="_blank" rel="noopener noreferrer">
+<img src="public/images/adverts/Etsy6 8.png" alt="Advertisement 2">
+</a>
+</div>
+<div class="ad-slide">
+<a href="public/images/adverts/Etsy2.png" target="_blank" rel="noopener noreferrer">
+<img src="public/images/adverts/Etsy2.png" alt="Advertisement 3">
+</a>
+</div>
+<div class="ad-slide">
+<a href="public/images/adverts/Etsy.png" target="_blank" rel="noopener noreferrer">
+<img src="public/images/adverts/Etsy.png" alt="Advertisement 4">
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<div class="audio-player" id="audioPlayer" aria-live="polite" aria-hidden="true">
+<div class="audio-player-content">
+<div class="player-controls">
+<button class="control-button" id="prevStationBtn" aria-label="Previous station">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11 19V5l-7 7 7 7zM22 5v14h-2V5h2z"/></svg>
+</button>
+<button class="control-button" id="playPauseBtn" aria-label="Play" aria-pressed="false">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" id="playIcon" aria-hidden="true">
+<polygon points="5 3 19 12 5 21 5 3"/>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" id="pauseIcon" style="display: none;" aria-hidden="true">
+<rect x="6" y="4" width="4" height="16"/>
+<rect x="14" y="4" width="4" height="16"/>
+</svg>
+</button>
+<button class="control-button" id="nextStationBtn" aria-label="Next station">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M13 5v14l7-7-7-7zM2 5v14h2V5H2z"/></svg>
+</button>
+</div>
+<div class="player-info">
+<div class="now-playing">Now Playing</div>
+<div class="station-name-player" id="currentStationName">Select a station</div>
+</div>
+<div class="volume-control" aria-hidden="false">
+<button class="volume-button" id="muteBtn" aria-label="Mute/Unmute">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="volumeIcon" aria-hidden="true">
+<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+<path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+<path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="mutedIcon" style="display: none;" aria-hidden="true">
+<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+<line x1="23" y1="9" x2="17" y2="15"/>
+<line x1="17" y1="9" x2="23" y2="15"/>
+</svg>
+</button>
+<div class="volume-slider" id="volumeSlider" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70" tabindex="0" aria-label="Volume">
+<div class="volume-fill" id="volumeFill" style="width: 70%"></div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="srLive" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+<audio id="audioElement"></audio>
+
+<script>
+// Radio stations data (same sample data)
+const radioStations = [
+{ id: "1", name: "Metro FM 94.5", genre: "Lusaka Zambia", imageUrl: "public/images/metro.png", streamUrl: "https://s24.myradiostream.com:15422/listen.mp3" },
+{ id: "2", name: "ZNBC 2", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio2?mp=/1&1713357326148" },
+{ id: "3", name: "Phoenix FM", genre: "Lusaka Zambia", imageUrl: "public/images/phoenix.png", streamUrl: "https://22733.live.streamtheworld.com/RADIO_PHOENIXAAC_SC?dist=onlineradiobox" },
+{ id: "4", name: "Hot FM", genre: "Lusaka Zambia", imageUrl: "public/images/hotfm.png", streamUrl: "https://stream-170.zeno.fm/s7acbwdffv8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzN2FjYndkZmZ2OHV2IiwiaG9zdCI6InN0cmVhbS0xNzAuemVuby5mbSIsImp0aSI6IngyS2ktYnBzUWNDRF94aERBSFFyTlEiLCJpYXQiOjE3MTMzNjE5OTUsImV4cCI6MTcxMzM2MjA1NX0.nz_XBd98YdUVLfiwKxZbo7Wo2y00_vtvQsOM-dUbzfo&zttl=5&aw_0_req_lsid=1713361994801_0.3072059924445578&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
+{ id: "5", name: "Christian Voice", genre: "Lusaka Zambia", imageUrl: "public/images/rcv.png", streamUrl: "https://streaming.shoutcast.com/rcv" },
+{ id: "6", name: "Lima Radio", genre: "Lusaka Zambia", imageUrl: "public/images/lima.jpg", streamUrl: "https://zambia.weradio.live/listen/lima_fm/radio.mp3" },
+{ id: "7", name: "Laka FM", genre: "Lusaka Zambia", imageUrl: "public/images/laka.jpg", streamUrl: "https://stream-174.zeno.fm/zgvj3sab3hztv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6Z3ZqM3NhYjNoenR2IiwiaG9zdCI6InN0cmVhbS0xNzQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlVybHpyUkVzUzItY1pGVVJVcFBBTFEiLCJpYXQiOjE3Mzg2MTM2MDYsImV4cCI6MTczODYxMzY2Nn0.F7A9AnZY6ZNFCWd0kCEUk-sn3GLkFmwStvZMa3PXpAE" },
+{ id: "8", name: "Q FM", genre: "Lusaka Zambia", imageUrl: "public/images/qfm.png", streamUrl: "https://s3.myradiostream.com/:7620/;" },
+{ id: "9", name: "One Love Radio", genre: "Lusaka Zambia", imageUrl: "public/images/onelove.jpg", streamUrl: "https://usa11.fastcast4u.com/proxy/thidhzuy?mp=/1&1713383766621" },
+{ id: "10", name: "YAR FM", genre: "Kitwe Zambia", imageUrl: "public/images/yarfm.jpg", streamUrl: "https://stream-153.zeno.fm/r2bpxyfsejatv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJyMmJweHlmc2VqYXR2IiwiaG9zdCI6InN0cmVhbS0xNTMuemVuby5mbSIsImp0aSI6Ijl2X1hzNndTVFhteUtpWm12anJVa1EiLCJpYXQiOjE3MTMzNzU1MjcsImV4cCI6MTcxMzM3NTU4N30.vNF2JSd4Xcmqcdm7U26PwnTH80ZGfZCD0AlWWGyuGGE&zttl=5&aw_0_req_lsid=1713375524945_0.4258190909470052&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
+{ id: "11", name: "ZNBC 1", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio1?mp=/1" },
+{ id: "12", name: "Roots FM", genre: "Lusaka Zambia", imageUrl: "public/images/rootsfm.jpg", streamUrl: "https://stream-156.zeno.fm/s7d1prkfbxhvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzN2QxcHJrZmJ4aHZ2IiwiaG9zdCI6InN0cmVhbS0xNTYuemVuby5mbSIsImp0aSI6Ijl2eFllODltUWVlaVo0bkN0NTBMZUEiLCJpYXQiOjE3MTMzNjIxMTMsImV4cCI6MTcxMzM2MjE3M30.f397tYx1TmV6mJxNwqj1MeZ8r6xS0WVb6O2BT-2a7_8&zttl=5&adtonosListenerId=01HT7Y4CTNHBG8Y8QB2GRQQ4SN&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
+{ id: "13", name: "Kanele FM", genre: "Lundazi Zambia", imageUrl: "public/images/kanele.png", streamUrl: "https://stream-176.zeno.fm/zn26dkfnvvytv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6bjI2ZGtmbnZ2eXR2IiwiaG9zdCI6InN0cmVhbS0xNzYuemVuby5mbSIsImp0aSI6IjM4RjRtcEdCUVpDa01jNG9vT0RsVnciLCJpYXQiOjE3MTMzNjI2NzAsImV4cCI6MTcxMzM2MjczMH0.H1XHI4UPZrGQ9vKW_si1UqygBWWB7Wjy8s2DhDs63VQ&zttl=5&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
+{ id: "14", name: "ZNBC 4", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio4?mp=/1&1713358176498" },
+{ id: "15", name: "Rovert Online Radio", genre: "Online Zambia", imageUrl: "public/images/rovert.png", streamUrl: "https://streaming.relevantmediaservices.com:8004/stream" },
+{ id: "16", name: "Zamcom Radio ", genre: "Lusaka Zambia", imageUrl: "public/images/zamcom.jpg", streamUrl: "https://stream-172.zeno.fm/boxjrzkyo6jvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJib3hqcnpreW82anZ2IiwiaG9zdCI6InN0cmVhbS0xNzIuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ii1LS3ZNZl9iU2hhV1JOUmwwbUhxTFEiLCJpYXQiOjE3MjE5MjA0NTYsImV4cCI6MTcyMTkyMDUxNn0.-sy3IVP-5Bh-7TAydBn5EDlcijdmGHg_ise10s1XvTU" },
+{ id: "17", name: "Radio Mano", genre: "Kasama Zambia", imageUrl: "public/images/mano.jpg", streamUrl: "https://stream-176.zeno.fm/ykxzsne4zkvuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5a3h6c25lNHprdnV2IiwiaG9zdCI6InN0cmVhbS0xNzYuemVuby5mbSIsImp0aSI6IndEN1otWWZ3U3dTUE8teEtzeXVDRGciLCJpYXQiOjE3MTMzODcwNDEsImV4cCI6MTcxMzM4NzEwMX0.ClxC7SMH1NzqOaoKkHuRTikWnlmBpYaH3hxPaN_ulXw&zttl=5&adtonosListenerId=01HVPX5NVX44JD4MJP238X6ESP&aw_0_req_lsid=fc922dabea8d0edf4124b5a3691d18e1&an-uid=1253802568230973136&mm-uid=af1d6620-2adf-4400-9ce4-0567c5dcfae5&dot-uid=0a67220400a3cb44ed69d4e4&triton-uid=cookie%3Ad7858047-5e69-4938-b7dc-4442bce32efc&amb-uid=4022064765230720136&dbm-uid=CAESEBiPkcWmRqDZHwIJNvMqWfw&cto-uid=5cfdec82-75ec-46cd-97ef-91743852881c-66202af4-5553&bsw-uid=417a1b17-c758-4bb5-8b19-16f8986a21c5&dyn-uid=4303398016732672596&ttd-uid=3f9dabbb-6dd3-4a68-afb4-23c31d01f7cb" },
+{ id: "18", name: "I am Catholic Radio", genre: "Online Zambia", imageUrl: "public/images/catholic.jpg", streamUrl: "https://ec4.yesstreaming.net:2015/stream" },
+{ id: "19", name: "Iwave Radio", genre: "Chingola Zambia", imageUrl: "public/images/iwave.jpg", streamUrl: "https://s47.myradiostream.com/:9934/listen.mp3/;" },
+{ id: "20", name: "ITT Radio", genre: "Itezhi tezhi Zambia", imageUrl: "public/images/itt.jpg", streamUrl: "https://stream-171.zeno.fm/srnxstft6rhvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzcm54c3RmdDZyaHZ2IiwiaG9zdCI6InN0cmVhbS0xNzEuemVuby5mbSIsImp0aSI6Ikx2dDhpb0hIUkpXOEhhMmJUSzc5MXciLCJpYXQiOjE3MTM1MDcwMjUsImV4cCI6MTcxMzUwNzA4NX0.gdzP_7Hgkfv8hH2whgvbJcKmtvO_18ByUG67XAyYxNg&zttl=5" },
+{ id: "21", name: "Mwami FM", genre: "Zambia", imageUrl: "public/images/mwami.jpg", streamUrl: "https://stream-151.zeno.fm/63ae8ksgns8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI2M2FlOGtzZ25zOHV2IiwiaG9zdCI6InN0cmVhbS0xNTEuemVuby5mbSIsImp0aSI6IlVPMmpZR01hUXY2cXAyQTkyZTk5bmciLCJpYXQiOjE3MTM1MTU2MDcsImV4cCI6MTcxMzUxNTY2N30.wYxXC5c2jrtGO6x-ARV4Ucqmh8zKWRuBMDYS3uPYwKU&zttl=5" },
+{ id: "22", name: "Megarock FM", genre: "Zambia", imageUrl: "public/images/megarock.png", streamUrl: "https://stream-154.zeno.fm/3t4x1nxtff9uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiIzdDR4MW54dGZmOXV2IiwiaG9zdCI6InN0cmVhbS0xNTQuemVuby5mbSIsImp0aSI6IkxLV3pkc3Y5VEJlTmpQelV0cEoxbVEiLCJpYXQiOjE3MTM1MTU4NTgsImV4cCI6MTcxMzUxNTkxOH0.wagIydV8rcuy2zVLuXIMJBHka7ZgYFBcOXFC9Gbt1Tg&zttl=5" },
+{ id: "23", name: "South Power Radio", genre: "Choma Zambia", imageUrl: "public/images/southpower.png", streamUrl: "https://stream-152.zeno.fm/yuzn5ufqvy8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5dXpuNXVmcXZ5OHV2IiwiaG9zdCI6InN0cmVhbS0xNTIuemVuby5mbSIsImp0aSI6InBQVjc5T1NKUlhHVHB4M1FOMVpUQlEiLCJpYXQiOjE3MTMzNzY2NDcsImV4cCI6MTcxMzM3NjcwN30.OXmRVrxk_dNmc8ubYgn1aYqRO-r2nV6YHYJp5sHTK6I&zttl=5&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
+
+];
+
+// State
+let currentStation = null;
+let isPlaying = false;
+let volume = 0.7;
+let isMuted = false;
+let currentPage = 0;
+const stationsPerPage = 16;
+let favorites = loadFavorites();
+let showFavoritesOnly = false;
+let searchTerm = '';
+
+// Listener counts - start at 0 and increase for playing station
+const listenerCounts = {};
+radioStations.forEach(station => {
+  listenerCounts[station.id] = 0;
+});
+
+// DOM elements
+const stationsGrid = document.getElementById('stationsGrid');
+const audioElement = document.getElementById('audioElement');
+const audioPlayer = document.getElementById('audioPlayer');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const playIcon = document.getElementById('playIcon');
+const pauseIcon = document.getElementById('pauseIcon');
+const currentStationName = document.getElementById('currentStationName');
+const muteBtn = document.getElementById('muteBtn');
+const volumeIcon = document.getElementById('volumeIcon');
+const mutedIcon = document.getElementById('mutedIcon');
+const volumeSlider = document.getElementById('volumeSlider');
+const volumeFill = document.getElementById('volumeFill');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const prevStationBtn = document.getElementById('prevStationBtn');
+const nextStationBtn = document.getElementById('nextStationBtn');
+const searchInput = document.getElementById('searchInput');
+const favFilterBtn = document.getElementById('favFilterBtn');
+const visibleCount = document.getElementById('visibleCount');
+const srLive = document.getElementById('srLive');
+
+// --- NEW AD SLIDER DOM ELEMENTS ---
+const adSliderWrapper = document.getElementById('adSliderWrapper');
+const adSliderTrack = document.getElementById('adSliderTrack');
+const adSlides = document.querySelectorAll('.ad-slide');
+
+// Initialize
+audioElement.volume = volume;
+updateVolumeUI();
+
+// Utility: persist favorites (simple set stored as array)
+function loadFavorites(){
+try {
+const raw = localStorage.getItem('weradio_favorites');
+if(!raw) return new Set();
+const arr = JSON.parse(raw);
+return new Set(Array.isArray(arr) ? arr : []);
+} catch(e){
+console.warn('Failed to load favorites', e);
+return new Set();
+}
+}
+
+function saveFavorites(){
+try {
+localStorage.setItem('weradio_favorites', JSON.stringify(Array.from(favorites)));
+} catch(e){
+console.warn('Failed to save favorites', e);
+}
+}
+
+// Derived: filtered list based on search and favorites
+function getFilteredStations(){
+const term = searchTerm.trim().toLowerCase();
+let list = radioStations.filter(s => {
+if(showFavoritesOnly && !favorites.has(s.id)) return false;
+if(!term) return true;
+return (s.name.toLowerCase().includes(term) || (s.genre || '').toLowerCase().includes(term));
+});
+return list;
+}
+
+// Format listener count to a readable format
+function formatListenerCount(count) {
+  if (count === 0) return '0';
+  if (count >= 1000) {
+    return (count / 1000).toFixed(1) + 'k';
+  }
+  return count.toString();
+}
+
+// Render stations (paginated)
+function renderStations() {
+const filtered = getFilteredStations();
+const totalPages = Math.max(1, Math.ceil(filtered.length / stationsPerPage));
+
+if (currentPage >= totalPages) currentPage = totalPages - 1;
+
+const startIndex = currentPage * stationsPerPage;
+const endIndex = startIndex + stationsPerPage;
+const visible = filtered.slice(startIndex, endIndex);
+
+visibleCount.textContent = filtered.length;
+
+// Create fragments for efficient rendering
+const fragment = document.createDocumentFragment();
+visible.forEach(station => {
+  const card = document.createElement('article');
+  card.className = 'station-card';
+  card.setAttribute('data-station-id', station.id);
+  card.tabIndex = 0;
+  card.setAttribute('role', 'button');
+  card.setAttribute('aria-label', `Play ${station.name}`);
+  
+  card.innerHTML = `
+    <div class="station-image-container">
+      <img src="${escapeHtml(station.imageUrl)}" alt="${escapeHtml(station.name)}" class="station-image" loading="lazy">
+      <div class="image-overlay"></div>
+      
+      <div class="listener-count" aria-label="${formatListenerCount(listenerCounts[station.id])} listeners">
+        ${formatListenerCount(listenerCounts[station.id])}
+      </div>
+      
+      <div class="card-actions" aria-hidden="false">
+        <button class="icon-button fav-button" type="button" title="Toggle favorite" data-fav="${favorites.has(station.id) ? '1' : '0'}" aria-pressed="${favorites.has(station.id) ? 'true' : 'false'}" data-station-id="${station.id}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${favorites.has(station.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true">
+            <path d="M12 21s-7.5-4.9-9-8.1C1.4 9.5 4.1 6 7.4 6c1.9 0 3.1 1 4.6 2.6C13.5 7 14.7 6 16.6 6 19.9 6 22.6 9.5 21 12.9 19.5 16.1 12 21 12 21z"/>
+          </svg>
+        </button>
+      </div>
+      
+      <button class="play-button ${currentStation === station.id && isPlaying ? 'playing' : ''}" type="button" aria-label="${currentStation === station.id && isPlaying ? 'Pause' : 'Play'} ${escapeHtml(station.name)}" data-station-id="${station.id}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          ${currentStation === station.id && isPlaying
+            ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+            : '<polygon points="5 3 19 12 5 21 5 3"/>'}
+        </svg>
+      </button>
+    </div>
+    
+    <div class="station-info">
+      <div class="station-name">${escapeHtml(station.name)}</div>
+      <div class="station-genre">${escapeHtml(station.genre)}</div>
+    </div>
+  `;
+  
+  fragment.appendChild(card);
+});
+
+stationsGrid.innerHTML = '';
+stationsGrid.appendChild(fragment);
+
+// Attach event listeners efficiently
+stationsGrid.querySelectorAll('.station-card').forEach(card => {
+  const id = card.getAttribute('data-station-id');
+  
+  // Click event
+  card.addEventListener('click', () => playStation(id));
+  
+  // Keyboard accessibility
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      playStation(id);
+    }
+  });
+  
+  // Play button
+  const playBtn = card.querySelector('.play-button');
+  if(playBtn){
+    playBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playStation(id);
+    });
+  }
+  
+  // Favorite button
+  const favBtn = card.querySelector('.fav-button');
+  if(favBtn){
+    favBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFavorite(id, favBtn);
+    });
+    
+    favBtn.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        e.stopPropagation();
+        toggleFavorite(id, favBtn);
+      }
+    });
+  }
+});
+
+updateNavigationButtons();
+}
+
+function updateNavigationButtons() {
+const totalPages = Math.max(1, Math.ceil(getFilteredStations().length / stationsPerPage));
+prevBtn.disabled = currentPage === 0;
+nextBtn.disabled = currentPage >= totalPages - 1;
+}
+
+function goToPreviousPage() {
+if (currentPage > 0) {
+currentPage--;
+renderStations();
+focusFirstStationIfExists();
+}
+}
+
+function goToNextPage() {
+const totalPages = Math.max(1, Math.ceil(getFilteredStations().length / stationsPerPage));
+if (currentPage < totalPages - 1) {
+currentPage++;
+renderStations();
+focusFirstStationIfExists();
+}
+}
+
+function playStation(stationId) {
+const station = radioStations.find(s => s.id === stationId);
+if (!station) return;
+
+// If same station, toggle play/pause
+if (currentStation === stationId) {
+togglePlayPause();
+return;
+}
+
+// Increment listener count for new playing station
+if (currentStation) {
+  // Decrement listener count for previously playing station
+  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+}
+
+// Increment listener count for new station
+listenerCounts[stationId] = (listenerCounts[stationId] || 0) + 1;
+
+currentStation = stationId;
+audioElement.src = station.streamUrl;
+currentStationName.textContent = station.name;
+isPlaying = true;
+audioElement.play().then(() => {
+}).catch(err => {
+isPlaying = false;
+// Decrement listener count if playback fails
+listenerCounts[stationId] = Math.max(0, (listenerCounts[stationId] || 0) - 1);
+renderStations();
+announceSR('Unable to play ' + station.name + '. The stream may be unavailable.');
+console.error('Playback error:', err);
+});
+
+audioPlayer.classList.add('active');
+adSliderWrapper.classList.add('active');
+audioPlayer.setAttribute('aria-hidden', 'false');
+playPauseBtn.setAttribute('aria-pressed', 'true');
+updateUI();
+announceSR('Now playing: ' + station.name);
+}
+
+function togglePlayPause() {
+if (!currentStation) return;
+if (isPlaying) {
+audioElement.pause();
+isPlaying = false;
+playPauseBtn.setAttribute('aria-pressed', 'false');
+announceSR('Paused');
+} else {
+audioElement.play().then(()=>{}).catch(err => {
+isPlaying = false;
+announceSR('Unable to resume playback');
+console.error('Playback error:', err);
+});
+isPlaying = true;
+playPauseBtn.setAttribute('aria-pressed', 'true');
+announceSR('Resumed');
+}
+updateUI();
+}
+
+function toggleMute() {
+isMuted = !isMuted;
+audioElement.muted = isMuted;
+updateVolumeUI();
+announceSR(isMuted ? 'Muted' : 'Unmuted');
+}
+
+function updateVolumeUI() {
+const width = (isMuted ? 0 : Math.round(volume * 100));
+volumeFill.style.width = width + '%';
+volumeSlider.setAttribute('aria-valuenow', String(width));
+volumeIcon.style.display = isMuted ? 'none' : 'block';
+mutedIcon.style.display = isMuted ? 'block' : 'none';
+}
+
+function updateUI() {
+playIcon.style.display = isPlaying ? 'none' : 'block';
+pauseIcon.style.display = isPlaying ? 'block' : 'none';
+// update station card buttons by re-rendering
+renderStations();
+}
+
+// Favorites handling
+function toggleFavorite(stationId, btnEl){
+if(favorites.has(stationId)){
+favorites.delete(stationId);
+} else {
+favorites.add(stationId);
+}
+saveFavorites();
+// reflect button state
+if(btnEl){
+  const pressed = favorites.has(stationId);
+  btnEl.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+  btnEl.dataset.fav = pressed ? '1' : '0';
+  // Update the heart SVG fill
+  const svg = btnEl.querySelector('svg');
+  if(svg) {
+    svg.querySelector('path').setAttribute('fill', pressed ? 'currentColor' : 'none');
+  }
+}
+// if favorites filter is active, re-render to hide/show
+renderStations();
+}
+
+// Next / Previous station based on current filtered list order
+function playNextStation(){
+const list = getFilteredStations();
+if(list.length === 0) return;
+if(!currentStation){
+playStation(list[0].id);
+return;
+}
+
+// Decrement listener count for current station
+if (currentStation) {
+  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+}
+
+const idx = list.findIndex(s => s.id === currentStation);
+const nextIdx = (idx === -1 || idx === list.length - 1) ? 0 : idx + 1;
+
+// Increment listener count for new station
+listenerCounts[list[nextIdx].id] = (listenerCounts[list[nextIdx].id] || 0) + 1;
+
+playStation(list[nextIdx].id);
+}
+
+function playPreviousStation(){
+const list = getFilteredStations();
+if(list.length === 0) return;
+if(!currentStation){
+playStation(list[0].id);
+return;
+}
+
+// Decrement listener count for current station
+if (currentStation) {
+  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+}
+
+const idx = list.findIndex(s => s.id === currentStation);
+const prevIdx = (idx <= 0) ? list.length - 1 : idx - 1;
+
+// Increment listener count for new station
+listenerCounts[list[prevIdx].id] = (listenerCounts[list[prevIdx].id] || 0) + 1;
+
+playStation(list[prevIdx].id);
+}
+
+// --- NEW AD SLIDER LOGIC ---
+let currentAdIndex = 0;
+const adCount = adSlides.length;
+function showNextAd() {
+currentAdIndex = (currentAdIndex + 1) % adCount;
+adSliderTrack.style.transform = `translateX(-${currentAdIndex * 100}%)`;
+}
+
+if (adCount > 1) {
+setInterval(showNextAd, 5000); // Change ad every 5 seconds
+}
+
+// --- END AD SLIDER LOGIC ---
+
+// Event listeners
+playPauseBtn.addEventListener('click', (e) => {
+e.preventDefault();
+togglePlayPause();
+});
+
+muteBtn.addEventListener('click', (e) => {
+e.preventDefault();
+toggleMute();
+});
+
+prevBtn.addEventListener('click', goToPreviousPage);
+nextBtn.addEventListener('click', goToNextPage);
+prevStationBtn.addEventListener('click', (e) => { e.preventDefault(); playPreviousStation(); });
+nextStationBtn.addEventListener('click', (e) => { e.preventDefault(); playNextStation(); });
+
+// Volume click and keyboard control
+volumeSlider.addEventListener('click', (e) => {
+const rect = volumeSlider.getBoundingClientRect();
+const x = e.clientX - rect.left;
+volume = Math.max(0, Math.min(1, x / rect.width));
+audioElement.volume = volume;
+isMuted = false;
+audioElement.muted = false;
+updateVolumeUI();
+});
+
+volumeSlider.addEventListener('keydown', (e) => {
+if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+volume = Math.max(0, volume - 0.05);
+} else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+volume = Math.min(1, volume + 0.05);
+} else if (e.key === 'Home') {
+volume = 0;
+} else if (e.key === 'End') {
+volume = 1;
+} else if (e.key === 'PageDown') {
+volume = Math.max(0, volume - 0.1);
+} else if (e.key === 'PageUp') {
+volume = Math.min(1, volume + 0.1);
+} else {
+return;
+}
+audioElement.volume = volume;
+isMuted = false;
+audioElement.muted = false;
+updateVolumeUI();
+e.preventDefault();
+});
+
+// Search and favorites filter
+searchInput.addEventListener('input', (e) => {
+searchTerm = e.target.value || '';
+currentPage = 0;
+renderStations();
+});
+
+favFilterBtn.addEventListener('click', () => {
+showFavoritesOnly = !showFavoritesOnly;
+favFilterBtn.setAttribute('aria-pressed', showFavoritesOnly ? 'true' : 'false');
+currentPage = 0;
+renderStations();
+});
+
+// audioElement events
+audioElement.addEventListener('ended', () => {
+// Decrement listener count when playback ends
+if (currentStation) {
+  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+}
+// automatically play next
+playNextStation();
+});
+
+audioElement.addEventListener('play', () => {
+isPlaying = true;
+updateUI();
+});
+
+audioElement.addEventListener('pause', () => {
+isPlaying = false;
+updateUI();
+});
+
+audioElement.addEventListener('error', () => {
+isPlaying = false;
+// Decrement listener count on error
+if (currentStation) {
+  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+}
+updateUI();
+const station = radioStations.find(s => s.id === currentStation);
+if(station) announceSR('Playback error for ' + station.name);
+});
+
+// Handle window close/unload to decrement listener count
+window.addEventListener('beforeunload', () => {
+  if (currentStation) {
+    listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+  }
+});
+
+// Pagination focus management helper
+function focusFirstStationIfExists(){
+const first = stationsGrid.querySelector('.station-card');
+if(first) first.focus();
+}
+
+// small helper to escape HTML for safety in template strings
+function escapeHtml(unsafe){
+if(!unsafe) return '';
+return String(unsafe)
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;")
+.replace(/'/g, "&#039;");
+}
+
+// Screen reader announcements helper
+function announceSR(message){
+srLive.textContent = '';
+setTimeout(()=> { srLive.textContent = message; }, 50);
+}
+
+// Only simulate listener count changes for the currently playing station
+function updateListenerCounts() {
+  // Only update when there's a currently playing station
+  if (!currentStation) return;
+  
+  const currentStationData = radioStations.find(s => s.id === currentStation);
+  if (currentStationData) {
+    // Only make changes to the currently playing station
+    const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or +1
+    listenerCounts[currentStation] = Math.max(0, listenerCounts[currentStation] + change);
+    
+    // Update UI element directly for better performance
+    const countElement = document.querySelector(`.station-card[data-station-id="${currentStation}"] .listener-count`);
+    if (countElement) {
+      countElement.textContent = formatListenerCount(listenerCounts[currentStation]);
+      countElement.setAttribute('aria-label', `${formatListenerCount(listenerCounts[currentStation])} listeners`);
+    }
+  }
+}
+
+// Update listener counts for currently playing station only
+setInterval(updateListenerCounts, 8000);
+
+// Initial render
+renderStations();
+
+// Expose some keyboard shortcuts for convenience
+document.addEventListener('keydown', (e) => {
+// Space when focus not in input toggles play/pause
+const activeTag = document.activeElement && document.activeElement.tagName;
+if((e.key === ' ' || e.code === 'Space') && activeTag !== 'INPUT' && activeTag !== 'TEXTAREA'){
+e.preventDefault();
+if(currentStation) togglePlayPause();
+} else if(e.key === 'ArrowRight' && (e.ctrlKey || e.metaKey)){
+e.preventDefault();
+playNextStation();
+} else if(e.key === 'ArrowLeft' && (e.ctrlKey || e.metaKey)){
+e.preventDefault();
+playPreviousStation();
+}
+});
+</script>
+</body>
+</html>
