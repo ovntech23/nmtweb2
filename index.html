@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>WeradioLive.com - Stream Your Favorite Stations</title>
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <style>
 :root{
 --bg-1: hsl(250, 30%, 8%);
@@ -598,7 +598,7 @@ font-size: 0.8rem;
 <option value="5">5</option>
 <option value="6">6</option>
 <option value="7">7</option>
-<option value="8" selected>8</option>
+<option value="8">8</option>
 </select>
 </div>
 <button id="favFilterBtn" class="small-toggle" aria-pressed="false" title="Show favorites only">♥ Favorites</button>
@@ -753,34 +753,39 @@ font-size: 0.8rem;
 <audio id="audioElement"></audio>
 
 <script>
-// Radio stations data with all social media links
+// Radio stations data
 const radioStations = [
-{ id: "1", name: "Metro FM 94.5", genre: "Lusaka Zambia", imageUrl: "public/images/metro.png", streamUrl: "https://s24.myradiostream.com:15422/listen.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/metrofm", twitter: "https://twitter.com/metrofm", instagram: "https://instagram.com/metrofm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@metrofm", tiktok: "https://tiktok.com/@metrofm", website: "https://metrofm.co.zm" } },
-{ id: "2", name: "ZNBC 2", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio2?mp=/1&1713357326148", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@znbc", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
-{ id: "3", name: "Phoenix FM", genre: "Lusaka Zambia", imageUrl: "public/images/phoenix.png", streamUrl: "https://22733.live.streamtheworld.com/RADIO_PHOENIXAAC_SC?dist=onlineradiobox", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/phoenixfm", twitter: "https://twitter.com/phoenixfm", instagram: "https://instagram.com/phoenixfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@phoenixfm", tiktok: "https://tiktok.com/@phoenixfm", website: "https://phoenixfm.co.zm" } },
-{ id: "4", name: "Hot FM", genre: "Lusaka Zambia", imageUrl: "public/images/hotfm.png", streamUrl: "https://stream-170.zeno.fm/s7acbwdffv8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzN2FjYndkZmZ2OHV2IiwiaG9zdCI6InN0cmVhbS0xNzAuemVuby5mbSIsImp0aSI6IngyS2ktYnBzUWNDRF94aERBSFFyTlEiLCJpYXQiOjE3MTMzNjE5OTUsImV4cCI6MTcxMzM2MjA1NX0.nz_XBd98YdUVLfiwKxZbo7Wo2y00_vtvQsOM-dUbzfo&zttl=5&aw_0_req_lsid=1713361994801_0.3072059924445578&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/hotfm", twitter: "https://twitter.com/hotfm", instagram: "https://instagram.com/hotfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@hotfm", tiktok: "https://tiktok.com/@hotfm", website: "https://hotfm.co.zm" } },
-{ id: "5", name: "Christian Voice", genre: "Lusaka Zambia", imageUrl: "public/images/rcv.png", streamUrl: "https://streaming.shoutcast.com/rcv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/christianvoice", twitter: "https://twitter.com/christianvoice", instagram: "https://instagram.com/christianvoice", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@christianvoice", tiktok: "https://tiktok.com/@christianvoice", website: "https://christianvoice.co.zm" } },
-{ id: "6", name: "Lima Radio", genre: "Lusaka Zambia", imageUrl: "public/images/lima.jpg", streamUrl: "https://zambia.weradio.live/listen/lima_fm/radio.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/limaradio", twitter: "https://twitter.com/limaradio", instagram: "https://instagram.com/limaradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@limaradio", tiktok: "https://tiktok.com/@limaradio", website: "https://limaradio.co.zm" } },
-{ id: "7", name: "Laka FM", genre: "Lusaka Zambia", imageUrl: "public/images/laka.jpg", streamUrl: "https://stream-174.zeno.fm/zgvj3sab3hztv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6Z3ZqM3NhYjNoenR2IiwiaG9zdCI6InN0cmVhbS0xNzQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlVybHpyUkVzUzItY1pGVVJVcFBBTFEiLCJpYXQiOjE3Mzg2MTM2MDYsImV4cCI6MTczODYxMzY2Nn0.F7A9AnZY6ZNFCWd0kCEUk-sn3GLkFmwStvZMa3PXpAE", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/lakafm", twitter: "https://twitter.com/lakafm", instagram: "https://instagram.com/lakafm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@lakafm", tiktok: "https://tiktok.com/@lakafm", website: "https://lakafm.co.zm" } },
-{ id: "8", name: "Q FM", genre: "Lusaka Zambia", imageUrl: "public/images/qfm.png", streamUrl: "https://s3.myradiostream.com/:7620/;", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/qfm", twitter: "https://twitter.com/qfm", instagram: "https://instagram.com/qfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@qfm", tiktok: "https://tiktok.com/@qfm", website: "https://qfm.co.zm" } },
-{ id: "9", name: "One Love Radio", genre: "Lusaka Zambia", imageUrl: "public/images/onelove.jpg", streamUrl: "https://usa11.fastcast4u.com/proxy/thidhzuy?mp=/1&1713383766621", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/oneloveradio", twitter: "https://twitter.com/oneloveradio", instagram: "https://instagram.com/oneloveradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@oneloveradio", tiktok: "https://tiktok.com/@oneloveradio", website: "https://oneloveradio.co.zm" } },
-{ id: "10", name: "YAR FM", genre: "Kitwe Zambia", imageUrl: "public/images/yarfm.jpg", streamUrl: "https://stream-153.zeno.fm/r2bpxyfsejatv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJyMmJweHlmc2VqYXR2IiwiaG9zdCI6InN0cmVhbS0xNTMuemVuby5mbSIsImp0aSI6Ijl2X1hzNndTVFhteUtpWm12anJVa1EiLCJpYXQiOjE3MTMzNzU1MjcsImV4cCI6MTcxMzM3NTU4N30.vNF2JSd4Xcmqcdm7U26PwnTH80ZGfZCD0AlWWGyuGGE&zttl=5&aw_0_req_lsid=1713375524945_0.4258190909470052&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/yarfm", twitter: "https://twitter.com/yarfm", instagram: "https://instagram.com/yarfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@yarfm", tiktok: "https://tiktok.com/@yarfm", website: "https://yarfm.co.zm" } },
-{ id: "11", name: "ZNBC 1", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio1?mp=/1", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@znbc", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
-{ id: "12", name: "Roots FM", genre: "Lusaka Zambia", imageUrl: "public/images/rootsfm.jpg", streamUrl: "https://stream-156.zeno.fm/s7d1prkfbxhvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzN2QxcHJrZmJ4aHZ2IiwiaG9zdCI6InN0cmVhbS0xNTYuemVuby5mbSIsImp0aSI6Ijl2eFllODltUWVlaVo0bkN0NTBMZUEiLCJpYXQiOjE3MTMzNjIxMTMsImV4cCI6MTcxMzM2MjE3M30.f397tYx1TmV6mJxNwqj1MeZ8r6xS0WVb6O2BT-2a7_8&zttl=5&adtonosListenerId=01HT7Y4CTNHBG8Y8QB2GRQQ4SN&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/rootsfm", twitter: "https://twitter.com/rootsfm", instagram: "https://instagram.com/rootsfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@rootsfm", tiktok: "https://tiktok.com/@rootsfm", website: "https://rootsfm.co.zm" } },
-{ id: "13", name: "Kanele FM", genre: "Lundazi Zambia", imageUrl: "public/images/kanele.png", streamUrl: "https://stream-176.zeno.fm/zn26dkfnvvytv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6bjI2ZGtmbnZ2eXR2IiwiaG9zdCI6InN0cmVhbS0xNzYuemVuby5mbSIsImp0aSI6IjM4RjRtcEdCUVpDa01jNG9vT0RsVnciLCJpYXQiOjE3MTMzNjI2NzAsImV4cCI6MTcxMzM2MjczMH0.H1XHI4UPZrGQ9vKW_si1UqygBWWB7Wjy8s2DhDs63VQ&zttl=5&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/kanelefm", twitter: "https://twitter.com/kanelefm", instagram: "https://instagram.com/kanelefm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@kanelefm", tiktok: "https://tiktok.com/@kanelefm", website: "https://kanelefm.co.zm" } },
-{ id: "14", name: "ZNBC 4", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio4?mp=/1&1713358176498", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@znbc", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
-{ id: "15", name: "Rovert Online Radio", genre: "Online Zambia", imageUrl: "public/images/rovert.png", streamUrl: "https://streaming.relevantmediaservices.com:8004/stream", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/rovert", twitter: "https://twitter.com/rovert", instagram: "https://instagram.com/rovert", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@rovert", tiktok: "https://tiktok.com/@rovert", website: "https://rovert.co.zm" } },
-{ id: "16", name: "Zamcom Radio ", genre: "Lusaka Zambia", imageUrl: "public/images/zamcom.jpg", streamUrl: "https://stream-172.zeno.fm/boxjrzkyo6jvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJib3hqcnpreW82anZ2IiwiaG9zdCI6InN0cmVhbS0xNzIuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ii1LS3ZNZl9iU2hhV1JOUmwwbUhxTFEiLCJpYXQiOjE3MjE5MjA0NTYsImV4cCI6MTcyMTkyMDUxNn0.-sy3IVP-5Bh-7TAydBn5EDlcijdmGHg_ise10s1XvTU", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/zamcom", twitter: "https://twitter.com/zamcom", instagram: "https://instagram.com/zamcom", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@zamcom", tiktok: "https://tiktok.com/@zamcom", website: "https://zamcom.co.zm" } },
-{ id: "17", name: "Radio Mano", genre: "Kasama Zambia", imageUrl: "public/images/mano.jpg", streamUrl: "https://stream-176.zeno.fm/ykxzsne4zkvuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5a3h6c25lNHprdnV2IiwiaG9zdCI6InN0cmVhbS0xNzYuemVuby5mbSIsImp0aSI6IndEN1otWWZ3U3dTUE8teEtzeXVDRGciLCJpYXQiOjE3MTMzODcwNDEsImV4cCI6MTcxMzM4NzEwMX0.ClxC7SMH1NzqOaoKkHuRTikWnlmBpYaH3hxPaN_ulXw&zttl=5&adtonosListenerId=01HVPX5NVX44JD4MJP238X6ESP&aw_0_req_lsid=fc922dabea8d0edf4124b5a3691d18e1&an-uid=1253802568230973136&mm-uid=af1d6620-2adf-4400-9ce4-0567c5dcfae5&dot-uid=0a67220400a3cb44ed69d4e4&triton-uid=cookie%3Ad7858047-5e69-4938-b7dc-4442bce32efc&amb-uid=4022064765230720136&dbm-uid=CAESEBiPkcWmRqDZHwIJNvMqWfw&cto-uid=5cfdec82-75ec-46cd-97ef-91743852881c-66202af4-5553&bsw-uid=417a1b17-c758-4bb5-8b19-16f8986a21c5&dyn-uid=4303398016732672596&ttd-uid=3f9dabbb-6dd3-4a68-afb4-23c31d01f7cb", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/radiomano", twitter: "https://twitter.com/radiomano", instagram: "https://instagram.com/radiomano", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@radiomano", tiktok: "https://tiktok.com/@radiomano", website: "https://radiomano.co.zm" } },
-{ id: "18", name: "I am Catholic Radio", genre: "Online Zambia", imageUrl: "public/images/catholic.jpg", streamUrl: "https://ec4.yesstreaming.net:2015/stream", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/catholicradio", twitter: "https://twitter.com/catholicradio", instagram: "https://instagram.com/catholicradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@catholicradio", tiktok: "https://tiktok.com/@catholicradio", website: "https://catholicradio.co.zm" } },
-{ id: "19", name: "Iwave Radio", genre: "Chingola Zambia", imageUrl: "public/images/iwave.jpg", streamUrl: "https://s47.myradiostream.com/:9934/listen.mp3/;", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/iwaveradio", twitter: "https://twitter.com/iwaveradio", instagram: "https://instagram.com/iwaveradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@iwaveradio", tiktok: "https://tiktok.com/@iwaveradio", website: "https://iwaveradio.co.zm" } },
-{ id: "20", name: "ITT Radio", genre: "Itezhi tezhi Zambia", imageUrl: "public/images/itt.jpg", streamUrl: "https://stream-171.zeno.fm/srnxstft6rhvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzcm54c3RmdDZyaHZ2IiwiaG9zdCI6InN0cmVhbS0xNzEuemVuby5mbSIsImp0aSI6Ikx2dDhpb0hIUkpXOEhhMmJUSzc5MXciLCJpYXQiOjE3MTM1MDcwMjUsImV4cCI6MTcxMzUwNzA4NX0.gdzP_7Hgkfv8hH2whgvbJcKmtvO_18ByUG67XAyYxNg&zttl=5", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/ittradio", twitter: "https://twitter.com/ittradio", instagram: "https://instagram.com/ittradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@ittradio", tiktok: "https://tiktok.com/@ittradio", website: "https://ittradio.co.zm" } },
-{ id: "21", name: "Mwami FM", genre: "Zambia", imageUrl: "public/images/mwami.jpg", streamUrl: "https://stream-151.zeno.fm/63ae8ksgns8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI2M2FlOGtzZ25zOHV2IiwiaG9zdCI6InN0cmVhbS0xNTEuemVuby5mbSIsImp0aSI6IlVPMmpZR01hUXY2cXAyQTkyZTk5bmciLCJpYXQiOjE3MTM1MTU2MDcsImV4cCI6MTcxMzUxNTY2N30.wYxXC5c2jrtGO6x-ARV4Ucqmh8zKWRuBMDYS3uPYwKU&zttl=5", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/mwamifm", twitter: "https://twitter.com/mwamifm", instagram: "https://instagram.com/mwamifm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@mwamifm", tiktok: "https://tiktok.com/@mwamifm", website: "https://mwamifm.co.zm" } },
-{ id: "22", name: "Megarock FM", genre: "Zambia", imageUrl: "public/images/megarock.png", streamUrl: "https://stream-154.zeno.fm/3t4x1nxtff9uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiIzdDR4MW54dGZmOXV2IiwiaG9zdCI6InN0cmVhbS0xNTQuemVuby5mbSIsImp0aSI6IkxLV3pkc3Y5VEJlTmpQelV0cEoxbVEiLCJpYXQiOjE3MTM1MTU4NTgsImV4cCI6MTcxMzUxNTkxOH0.wagIydV8rcuy2zVLuXIMJBHka7ZgYFBcOXFC9Gbt1Tg&zttl=5", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/megarockfm", twitter: "https://twitter.com/megarockfm", instagram: "https://instagram.com/megarockfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@megarockfm", tiktok: "https://tiktok.com/@megarockfm", website: "https://megarockfm.co.zm" } },
-{ id: "23", name: "South Power Radio", genre: "Choma Zambia", imageUrl: "public/images/southpower.png", streamUrl: "https://stream-152.zeno.fm/yuzn5ufqvy8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5dXpuNXVmcXZ5OHV2IiwiaG9zdCI6InN0cmVhbS0xNTIuemVuby5mbSIsImp0aSI6InBQVjc5T1NKUlhHVHB4M1FOMVpUQlEiLCJpYXQiOjE3MTMzNzY2NDcsImV4cCI6MTcxMzM3NjcwN30.OXmRVrxk_dNmc8ubYgn1aYqRO-r2nV6YHYJp5sHTK6I&zttl=5&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/southpower", twitter: "https://twitter.com/southpower", instagram: "https://instagram.com/southpower", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@southpower", tiktok: "https://tiktok.com/@southpower", website: "https://southpower.co.zm" } },
-{ id: "24", name: "Christian Nation", genre: "Lusaka Zambia", imageUrl: "public/images/cn.png", streamUrl: "https://stream-169.zeno.fm/dcvyegbhys6uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJkY3Z5ZWdiaHlzNnV2IiwiaG9zdCI6InN0cmVhbS0xNjkuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ijh1SF9JUV9fU1EyTUwzWkNmZTNpWHciLCJpYXQiOjE3NjAxMDY2MzEsImV4cCI6MTc2MDEwNjY5MX0._Aw6XIdJqjJGkRwnkWrIfVL3rZO2nmrwwa5N-bgycyY", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/christiannation", twitter: "https://twitter.com/christiannation", instagram: "https://instagram.com/christiannation", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@christiannation", tiktok: "https://tiktok.com/@christiannation", website: "https://christiannation.co.zm" } },
-{ id: "25", name: "Intercity Radio", genre: "Lusaka Zambia", imageUrl: "public/images/intercity.png", streamUrl: "https://zambia.weradio.live/listen/maranatha_bible_church/radio.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/intercityradio", twitter: "https://twitter.com/intercityradio", instagram: "https://instagram.com/intercityradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@intercityradio", tiktok: "https://tiktok.com/@intercityradio", website: "https://intercityradio.co.zm" } },
+{ id: "1", name: "Metro FM 94.5", genre: "Lusaka Zambia", imageUrl: "public/images/metro.png", streamUrl: "https://s24.myradiostream.com:15422/listen.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/metrofm", twitter: "https://twitter.com/metrofm", instagram: "https://instagram.com/metrofm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@metrofm", website: "https://metrofm.co.zm" } },
+{ id: "2", name: "ZNBC 2", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio2?mp=/1&1713357326148", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
+{ id: "3", name: "Phoenix FM", genre: "Lusaka Zambia", imageUrl: "public/images/phoenix.png", streamUrl: "https://22733.live.streamtheworld.com/RADIO_PHOENIXAAC_SC?dist=onlineradiobox", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/phoenixfm", twitter: "https://twitter.com/phoenixfm", instagram: "https://instagram.com/phoenixfm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@phoenixfm", website: "https://phoenixfm.co.zm" } },
+{ id: "4", name: "Hot FM", genre: "Lusaka Zambia", imageUrl: "public/images/hotfm.png", streamUrl: "https://stream-170.zeno.fm/s7acbwdffv8uv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/hotfm", twitter: "https://twitter.com/hotfm", instagram: "https://instagram.com/hotfm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@hotfm", website: "https://hotfm.co.zm" } },
+{ id: "5", name: "Christian Voice", genre: "Lusaka Zambia", imageUrl: "public/images/rcv.png", streamUrl: "https://streaming.shoutcast.com/rcv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/christianvoice", twitter: "https://twitter.com/christianvoice", instagram: "https://instagram.com/christianvoice", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@christianvoice", website: "https://christianvoice.co.zm" } },
+{ id: "6", name: "Lima Radio", genre: "Lusaka Zambia", imageUrl: "public/images/lima.jpg", streamUrl: "https://zambia.weradio.live/listen/lima_fm/radio.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/limaradio", twitter: "https://twitter.com/limaradio", instagram: "https://instagram.com/limaradio", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@limaradio", website: "https://limaradio.co.zm" } },
+{ id: "7", name: "Laka FM", genre: "Lusaka Zambia", imageUrl: "public/images/laka.jpg", streamUrl: "https://stream-174.zeno.fm/zgvj3sab3hztv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/lakafm", twitter: "https://twitter.com/lakafm", instagram: "https://instagram.com/lakafm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@lakafm", website: "https://lakafm.co.zm" } },
+{ id: "8", name: "Q FM", genre: "Lusaka Zambia", imageUrl: "public/images/qfm.png", streamUrl: "https://s3.myradiostream.com/:7620/;", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/qfm", twitter: "https://twitter.com/qfm", instagram: "https://instagram.com/qfm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@qfm", website: "https://qfm.co.zm" } },
+{ id: "9", name: "One Love Radio", genre: "Lusaka Zambia", imageUrl: "public/images/onelove.jpg", streamUrl: "https://usa11.fastcast4u.com/proxy/thidhzuy?mp=/1&1713383766621", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/oneloveradio", twitter: "https://twitter.com/oneloveradio", instagram: "https://instagram.com/oneloveradio", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@oneloveradio", website: "https://oneloveradio.co.zm" } },
+{ id: "10", name: "YAR FM", genre: "Kitwe Zambia", imageUrl: "public/images/yarfm.jpg", streamUrl: "https://stream-153.zeno.fm/r2bpxyfsejatv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/yarfm", twitter: "https://twitter.com/yarfm", instagram: "https://instagram.com/yarfm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@yarfm", website: "https://yarfm.co.zm" } },
+{ id: "11", name: "ZNBC 1", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio1?mp=/1", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
+{ id: "12", name: "Roots FM", genre: "Lusaka Zambia", imageUrl: "public/images/rootsfm.jpg", streamUrl: "https://stream-156.zeno.fm/s7d1prkfbxhvv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/rootsfm", twitter: "https://twitter.com/rootsfm", instagram: "https://instagram.com/rootsfm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@rootsfm", website: "https://rootsfm.co.zm" } },
+{ id: "13", name: "Kanele FM", genre: "Lundazi Zambia", imageUrl: "public/images/kanele.png", streamUrl: "https://stream-176.zeno.fm/zn26dkfnvvytv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/kanelefm", twitter: "https://twitter.com/kanelefm", instagram: "https://instagram.com/kanelefm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@kanelefm", website: "https://kanelefm.co.zm" } },
+{ id: "14", name: "ZNBC 4", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio4?mp=/1&1713358176498", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
+{ id: "15", name: "Rovert Online Radio", genre: "Online Zambia", imageUrl: "public/images/rovert.png", streamUrl: "https://streaming.relevantmediaservices.com:8004/stream", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/rovert", twitter: "https://twitter.com/rovert", instagram: "https://instagram.com/rovert", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@rovert", website: "https://rovert.co.zm" } },
+{ id: "16", name: "Zamcom Radio ", genre: "Lusaka Zambia", imageUrl: "public/images/zamcom.jpg", streamUrl: "https://stream-172.zeno.fm/boxjrzkyo6jvv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/zamcom", twitter: "https://twitter.com/zamcom", instagram: "https://instagram.com/zamcom", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@zamcom", website: "https://zamcom.co.zm" } },
+{ id: "17", name: "Radio Mano", genre: "Kasama Zambia", imageUrl: "public/images/mano.jpg", streamUrl: "https://stream-176.zeno.fm/ykxzsne4zkvuv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/radiomano", twitter: "https://twitter.com/radiomano", instagram: "https://instagram.com/radiomano", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@radiomano", website: "https://radiomano.co.zm" } },
+{ id: "18", name: "I am Catholic Radio", genre: "Online Zambia", imageUrl: "public/images/catholic.jpg", streamUrl: "https://ec4.yesstreaming.net:2015/stream", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/catholicradio", twitter: "https://twitter.com/catholicradio", instagram: "https://instagram.com/catholicradio", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@catholicradio", website: "https://catholicradio.co.zm" } },
+{ id: "19", name: "Iwave Radio", genre: "Chingola Zambia", imageUrl: "public/images/iwave.jpg", streamUrl: "https://s47.myradiostream.com/:9934/listen.mp3/;", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/iwaveradio", twitter: "https://twitter.com/iwaveradio", instagram: "https://instagram.com/iwaveradio", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@iwaveradio", website: "https://iwaveradio.co.zm" } },
+{ id: "20", name: "ITT Radio", genre: "Itezhi tezhi Zambia", imageUrl: "public/images/itt.jpg", streamUrl: "https://stream-171.zeno.fm/srnxstft6rhvv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/ittradio", twitter: "https://twitter.com/ittradio", instagram: "https://instagram.com/ittradio", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@ittradio", website: "https://ittradio.co.zm" } },
+{ id: "21", name: "Mwami FM", genre: "Zambia", imageUrl: "public/images/mwami.jpg", streamUrl: "https://stream-151.zeno.fm/63ae8ksgns8uv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/mwamifm", twitter: "https://twitter.com/mwamifm", instagram: "https://instagram.com/mwamifm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@mwamifm", website: "https://mwamifm.co.zm" } },
+{ id: "22", name: "Megarock FM", genre: "Zambia", imageUrl: "public/images/megarock.png", streamUrl: "https://stream-154.zeno.fm/3t4x1nxtff9uv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/megarockfm", twitter: "https://twitter.com/megarockfm", instagram: "https://instagram.com/megarockfm", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@megarockfm", website: "https://megarockfm.co.zm" } },
+{ id: "23", name: "South Power Radio", genre: "Choma Zambia", imageUrl: "public/images/southpower.png", streamUrl: "https://stream-152.zeno.fm/yuzn5ufqvy8uv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/southpower", twitter: "https://twitter.com/southpower", instagram: "https://instagram.com/southpower", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@southpower", website: "https://southpower.co.zm" } },
+{ id: "24", name: "Christian Nation", genre: "Lusaka Zambia", imageUrl: "public/images/cn.png", streamUrl: "https://stream-169.zeno.fm/dcvyegbhys6uv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/christiannation", twitter: "https://twitter.com/christiannation", instagram: "https://instagram.com/christiannation", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@christiannation", website: "https://christiannation.co.zm" } },
+{ id: "25", name: "Intercity Radio", genre: "Lusaka Zambia", imageUrl: "public/images/intercity.png", streamUrl: "https://zambia.weradio.live/listen/maranatha_bible_church/radio.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/intercityradio", twitter: "https://twitter.com/intercityradio", instagram: "https://instagram.com/intercityradio", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@intercityradio", website: "https://intercityradio.co.zm" } },
 ];
+
+// Detect if mobile on initial load
+function isMobileDevice() {
+  return window.innerWidth <= 480;
+}
 
 // State
 let currentStation = null;
@@ -794,7 +799,7 @@ let showFavoritesOnly = false;
 let searchTerm = '';
 let columnCount = loadColumnCount();
 
-// Listener counts - start at 0 and increase for playing station
+// Listener counts
 const listenerCounts = {};
 radioStations.forEach(station => {
   listenerCounts[station.id] = 0;
@@ -823,7 +828,6 @@ const visibleCount = document.getElementById('visibleCount');
 const srLive = document.getElementById('srLive');
 const columnCountSelect = document.getElementById('columnCount');
 
-// --- NEW AD SLIDER DOM ELEMENTS ---
 const adSliderWrapper = document.getElementById('adSliderWrapper');
 const adSliderTrack = document.getElementById('adSliderTrack');
 const adSlides = document.querySelectorAll('.ad-slide');
@@ -837,9 +841,13 @@ updateGridColumns();
 function loadColumnCount() {
   try {
     const saved = localStorage.getItem('weradio_column_count');
-    return saved ? parseInt(saved, 10) : 8;
+    if (saved) {
+      return parseInt(saved, 10);
+    }
+    // Default: 2 for mobile, 8 for desktop
+    return isMobileDevice() ? 2 : 8;
   } catch(e) {
-    return 8;
+    return isMobileDevice() ? 2 : 8;
   }
 }
 
@@ -851,52 +859,44 @@ function saveColumnCount(count) {
   }
 }
 
-// Utility: persist favorites (simple set stored as array)
 function loadFavorites(){
-try {
-const raw = localStorage.getItem('weradio_favorites');
-if(!raw) return new Set();
-const arr = JSON.parse(raw);
-return new Set(Array.isArray(arr) ? arr : []);
-} catch(e){
-console.warn('Failed to load favorites', e);
-return new Set();
-}
+  try {
+    const raw = localStorage.getItem('weradio_favorites');
+    if(!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch(e){
+    console.warn('Failed to load favorites', e);
+    return new Set();
+  }
 }
 
 function saveFavorites(){
-try {
-localStorage.setItem('weradio_favorites', JSON.stringify(Array.from(favorites)));
-} catch(e){
-console.warn('Failed to save favorites', e);
-}
+  try {
+    localStorage.setItem('weradio_favorites', JSON.stringify(Array.from(favorites)));
+  } catch(e){
+    console.warn('Failed to save favorites', e);
+  }
 }
 
-// Update grid columns
 function updateGridColumns() {
-  // Remove all column classes
   for (let i = 1; i <= 8; i++) {
     stationsGrid.classList.remove(`cols-${i}`);
   }
-  // Add the current column class
   stationsGrid.classList.add(`cols-${columnCount}`);
-  
-  // Update select value
   columnCountSelect.value = columnCount;
 }
 
-// Derived: filtered list based on search and favorites
 function getFilteredStations(){
-const term = searchTerm.trim().toLowerCase();
-let list = radioStations.filter(s => {
-if(showFavoritesOnly && !favorites.has(s.id)) return false;
-if(!term) return true;
-return (s.name.toLowerCase().includes(term) || (s.genre || '').toLowerCase().includes(term));
-});
-return list;
+  const term = searchTerm.trim().toLowerCase();
+  let list = radioStations.filter(s => {
+    if(showFavoritesOnly && !favorites.has(s.id)) return false;
+    if(!term) return true;
+    return (s.name.toLowerCase().includes(term) || (s.genre || '').toLowerCase().includes(term));
+  });
+  return list;
 }
 
-// Format listener count to a readable format
 function formatListenerCount(count) {
   if (count === 0) return '0';
   if (count >= 1000) {
@@ -905,13 +905,11 @@ function formatListenerCount(count) {
   return count.toString();
 }
 
-// Generate social icons HTML - all icons except YouTube
 function generateSocialIcons(social) {
   if (!social) return '';
   
   let iconsHTML = '<div class="station-social-icons">';
   
-  // Facebook
   iconsHTML += `
     <a href="${escapeHtml(social.facebook || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Facebook" onclick="event.stopPropagation()">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -920,7 +918,6 @@ function generateSocialIcons(social) {
     </a>
   `;
   
-  // Twitter
   iconsHTML += `
     <a href="${escapeHtml(social.twitter || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Twitter" onclick="event.stopPropagation()">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -929,7 +926,6 @@ function generateSocialIcons(social) {
     </a>
   `;
   
-  // Instagram
   iconsHTML += `
     <a href="${escapeHtml(social.instagram || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Instagram" onclick="event.stopPropagation()">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -938,7 +934,6 @@ function generateSocialIcons(social) {
     </a>
   `;
   
-  // WhatsApp
   iconsHTML += `
     <a href="${escapeHtml(social.whatsapp || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="WhatsApp" onclick="event.stopPropagation()">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -947,7 +942,6 @@ function generateSocialIcons(social) {
     </a>
   `;
   
-  // TikTok
   iconsHTML += `
     <a href="${escapeHtml(social.tiktok || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="TikTok" onclick="event.stopPropagation()">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -956,7 +950,6 @@ function generateSocialIcons(social) {
     </a>
   `;
   
-  // Website
   iconsHTML += `
     <a href="${escapeHtml(social.website || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Website" onclick="event.stopPropagation()">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -969,7 +962,6 @@ function generateSocialIcons(social) {
   return iconsHTML;
 }
 
-// Generate sponsor badge HTML
 function generateSponsorBadge(sponsorName) {
   if (!sponsorName) return '';
   
@@ -988,303 +980,277 @@ function generateSponsorBadge(sponsorName) {
   `;
 }
 
-// Render stations (paginated)
 function renderStations() {
-const filtered = getFilteredStations();
-const totalPages = Math.max(1, Math.ceil(filtered.length / stationsPerPage));
+  const filtered = getFilteredStations();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / stationsPerPage));
 
-if (currentPage >= totalPages) currentPage = totalPages - 1;
+  if (currentPage >= totalPages) currentPage = totalPages - 1;
 
-const startIndex = currentPage * stationsPerPage;
-const endIndex = startIndex + stationsPerPage;
-const visible = filtered.slice(startIndex, endIndex);
+  const startIndex = currentPage * stationsPerPage;
+  const endIndex = startIndex + stationsPerPage;
+  const visible = filtered.slice(startIndex, endIndex);
 
-visibleCount.textContent = filtered.length;
+  visibleCount.textContent = filtered.length;
 
-// Create fragments for efficient rendering
-const fragment = document.createDocumentFragment();
-visible.forEach(station => {
-  const card = document.createElement('article');
-  card.className = 'station-card';
-  card.setAttribute('data-station-id', station.id);
-  card.tabIndex = 0;
-  card.setAttribute('role', 'button');
-  card.setAttribute('aria-label', `Play ${station.name}`);
-  
-  card.innerHTML = `
-    <div class="station-image-container">
-      <img src="${escapeHtml(station.imageUrl)}" alt="${escapeHtml(station.name)}" class="station-image" loading="lazy">
-      <div class="image-overlay"></div>
-      
-      <div class="listener-count" aria-label="${formatListenerCount(listenerCounts[station.id])} listeners">
-        ${formatListenerCount(listenerCounts[station.id])}
-      </div>
-      
-      <div class="card-actions" aria-hidden="false">
-        <button class="icon-button fav-button" type="button" title="Toggle favorite" data-fav="${favorites.has(station.id) ? '1' : '0'}" aria-pressed="${favorites.has(station.id) ? 'true' : 'false'}" data-station-id="${station.id}">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${favorites.has(station.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true">
-            <path d="M12 21s-7.5-4.9-9-8.1C1.4 9.5 4.1 6 7.4 6c1.9 0 3.1 1 4.6 2.6C13.5 7 14.7 6 16.6 6 19.9 6 22.6 9.5 21 12.9 19.5 16.1 12 21 12 21z"/>
+  const fragment = document.createDocumentFragment();
+  visible.forEach(station => {
+    const card = document.createElement('article');
+    card.className = 'station-card';
+    card.setAttribute('data-station-id', station.id);
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `Play ${station.name}`);
+    
+    card.innerHTML = `
+      <div class="station-image-container">
+        <img src="${escapeHtml(station.imageUrl)}" alt="${escapeHtml(station.name)}" class="station-image" loading="lazy">
+        <div class="image-overlay"></div>
+        
+        <div class="listener-count" aria-label="${formatListenerCount(listenerCounts[station.id])} listeners">
+          ${formatListenerCount(listenerCounts[station.id])}
+        </div>
+        
+        <div class="card-actions" aria-hidden="false">
+          <button class="icon-button fav-button" type="button" title="Toggle favorite" data-fav="${favorites.has(station.id) ? '1' : '0'}" aria-pressed="${favorites.has(station.id) ? 'true' : 'false'}" data-station-id="${station.id}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${favorites.has(station.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" width="16" height="16" aria-hidden="true">
+              <path d="M12 21s-7.5-4.9-9-8.1C1.4 9.5 4.1 6 7.4 6c1.9 0 3.1 1 4.6 2.6C13.5 7 14.7 6 16.6 6 19.9 6 22.6 9.5 21 12.9 19.5 16.1 12 21 12 21z"/>
+            </svg>
+          </button>
+        </div>
+        
+        <button class="play-button ${currentStation === station.id && isPlaying ? 'playing' : ''}" type="button" aria-label="${currentStation === station.id && isPlaying ? 'Pause' : 'Play'} ${escapeHtml(station.name)}" data-station-id="${station.id}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            ${currentStation === station.id && isPlaying
+              ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+              : '<polygon points="5 3 19 12 5 21 5 3"/>'}
           </svg>
         </button>
       </div>
       
-      <button class="play-button ${currentStation === station.id && isPlaying ? 'playing' : ''}" type="button" aria-label="${currentStation === station.id && isPlaying ? 'Pause' : 'Play'} ${escapeHtml(station.name)}" data-station-id="${station.id}">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          ${currentStation === station.id && isPlaying
-            ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
-            : '<polygon points="5 3 19 12 5 21 5 3"/>'}
-        </svg>
-      </button>
-    </div>
+      <div class="station-info">
+        <div class="station-name">${escapeHtml(station.name)}</div>
+        <div class="station-genre">${escapeHtml(station.genre)}</div>
+        ${generateSocialIcons(station.social)}
+        ${generateSponsorBadge(station.sponsor)}
+      </div>
+    `;
     
-    <div class="station-info">
-      <div class="station-name">${escapeHtml(station.name)}</div>
-      <div class="station-genre">${escapeHtml(station.genre)}</div>
-      ${generateSocialIcons(station.social)}
-      ${generateSponsorBadge(station.sponsor)}
-    </div>
-  `;
-  
-  fragment.appendChild(card);
-});
-
-stationsGrid.innerHTML = '';
-stationsGrid.appendChild(fragment);
-
-// Attach event listeners efficiently
-stationsGrid.querySelectorAll('.station-card').forEach(card => {
-  const id = card.getAttribute('data-station-id');
-  
-  // Click event
-  card.addEventListener('click', () => playStation(id));
-  
-  // Keyboard accessibility
-  card.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      playStation(id);
-    }
+    fragment.appendChild(card);
   });
-  
-  // Play button
-  const playBtn = card.querySelector('.play-button');
-  if(playBtn){
-    playBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      playStation(id);
-    });
-  }
-  
-  // Favorite button
-  const favBtn = card.querySelector('.fav-button');
-  if(favBtn){
-    favBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleFavorite(id, favBtn);
-    });
+
+  stationsGrid.innerHTML = '';
+  stationsGrid.appendChild(fragment);
+
+  stationsGrid.querySelectorAll('.station-card').forEach(card => {
+    const id = card.getAttribute('data-station-id');
     
-    favBtn.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter' || e.key === ' '){
+    card.addEventListener('click', () => playStation(id));
+    
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        e.stopPropagation();
-        toggleFavorite(id, favBtn);
+        playStation(id);
       }
     });
-  }
-});
+    
+    const playBtn = card.querySelector('.play-button');
+    if(playBtn){
+      playBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playStation(id);
+      });
+    }
+    
+    const favBtn = card.querySelector('.fav-button');
+    if(favBtn){
+      favBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFavorite(id, favBtn);
+      });
+      
+      favBtn.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          e.stopPropagation();
+          toggleFavorite(id, favBtn);
+        }
+      });
+    }
+  });
 
-updateNavigationButtons();
+  updateNavigationButtons();
 }
 
 function updateNavigationButtons() {
-const totalPages = Math.max(1, Math.ceil(getFilteredStations().length / stationsPerPage));
-prevBtn.disabled = currentPage === 0;
-nextBtn.disabled = currentPage >= totalPages - 1;
+  const totalPages = Math.max(1, Math.ceil(getFilteredStations().length / stationsPerPage));
+  prevBtn.disabled = currentPage === 0;
+  nextBtn.disabled = currentPage >= totalPages - 1;
 }
 
 function goToPreviousPage() {
-if (currentPage > 0) {
-currentPage--;
-renderStations();
-focusFirstStationIfExists();
-}
+  if (currentPage > 0) {
+    currentPage--;
+    renderStations();
+    focusFirstStationIfExists();
+  }
 }
 
 function goToNextPage() {
-const totalPages = Math.max(1, Math.ceil(getFilteredStations().length / stationsPerPage));
-if (currentPage < totalPages - 1) {
-currentPage++;
-renderStations();
-focusFirstStationIfExists();
-}
+  const totalPages = Math.max(1, Math.ceil(getFilteredStations().length / stationsPerPage));
+  if (currentPage < totalPages - 1) {
+    currentPage++;
+    renderStations();
+    focusFirstStationIfExists();
+  }
 }
 
 function playStation(stationId) {
-const station = radioStations.find(s => s.id === stationId);
-if (!station) return;
+  const station = radioStations.find(s => s.id === stationId);
+  if (!station) return;
 
-// If same station, toggle play/pause
-if (currentStation === stationId) {
-togglePlayPause();
-return;
-}
+  if (currentStation === stationId) {
+    togglePlayPause();
+    return;
+  }
 
-// Increment listener count for new playing station
-if (currentStation) {
-  // Decrement listener count for previously playing station
-  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
-}
+  if (currentStation) {
+    listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+  }
 
-// Increment listener count for new station
-listenerCounts[stationId] = (listenerCounts[stationId] || 0) + 1;
+  listenerCounts[stationId] = (listenerCounts[stationId] || 0) + 1;
 
-currentStation = stationId;
-audioElement.src = station.streamUrl;
-currentStationName.textContent = station.name;
-isPlaying = true;
-audioElement.play().then(() => {
-}).catch(err => {
-isPlaying = false;
-// Decrement listener count if playback fails
-listenerCounts[stationId] = Math.max(0, (listenerCounts[stationId] || 0) - 1);
-renderStations();
-announceSR('Unable to play ' + station.name + '. The stream may be unavailable.');
-console.error('Playback error:', err);
-});
+  currentStation = stationId;
+  audioElement.src = station.streamUrl;
+  currentStationName.textContent = station.name;
+  isPlaying = true;
+  audioElement.play().then(() => {
+  }).catch(err => {
+    isPlaying = false;
+    listenerCounts[stationId] = Math.max(0, (listenerCounts[stationId] || 0) - 1);
+    renderStations();
+    announceSR('Unable to play ' + station.name + '. The stream may be unavailable.');
+    console.error('Playback error:', err);
+  });
 
-audioPlayer.classList.add('active');
-adSliderWrapper.classList.add('active');
-audioPlayer.setAttribute('aria-hidden', 'false');
-playPauseBtn.setAttribute('aria-pressed', 'true');
-updateUI();
-announceSR('Now playing: ' + station.name);
+  audioPlayer.classList.add('active');
+  adSliderWrapper.classList.add('active');
+  audioPlayer.setAttribute('aria-hidden', 'false');
+  playPauseBtn.setAttribute('aria-pressed', 'true');
+  updateUI();
+  announceSR('Now playing: ' + station.name);
 }
 
 function togglePlayPause() {
-if (!currentStation) return;
-if (isPlaying) {
-audioElement.pause();
-isPlaying = false;
-playPauseBtn.setAttribute('aria-pressed', 'false');
-announceSR('Paused');
-} else {
-audioElement.play().then(()=>{}).catch(err => {
-isPlaying = false;
-announceSR('Unable to resume playback');
-console.error('Playback error:', err);
-});
-isPlaying = true;
-playPauseBtn.setAttribute('aria-pressed', 'true');
-announceSR('Resumed');
-}
-updateUI();
+  if (!currentStation) return;
+  if (isPlaying) {
+    audioElement.pause();
+    isPlaying = false;
+    playPauseBtn.setAttribute('aria-pressed', 'false');
+    announceSR('Paused');
+  } else {
+    audioElement.play().then(()=>{}).catch(err => {
+      isPlaying = false;
+      announceSR('Unable to resume playback');
+      console.error('Playback error:', err);
+    });
+    isPlaying = true;
+    playPauseBtn.setAttribute('aria-pressed', 'true');
+    announceSR('Resumed');
+  }
+  updateUI();
 }
 
 function toggleMute() {
-isMuted = !isMuted;
-audioElement.muted = isMuted;
-updateVolumeUI();
-announceSR(isMuted ? 'Muted' : 'Unmuted');
+  isMuted = !isMuted;
+  audioElement.muted = isMuted;
+  updateVolumeUI();
+  announceSR(isMuted ? 'Muted' : 'Unmuted');
 }
 
 function updateVolumeUI() {
-const width = (isMuted ? 0 : Math.round(volume * 100));
-volumeFill.style.width = width + '%';
-volumeSlider.setAttribute('aria-valuenow', String(width));
-volumeIcon.style.display = isMuted ? 'none' : 'block';
-mutedIcon.style.display = isMuted ? 'block' : 'none';
+  const width = (isMuted ? 0 : Math.round(volume * 100));
+  volumeFill.style.width = width + '%';
+  volumeSlider.setAttribute('aria-valuenow', String(width));
+  volumeIcon.style.display = isMuted ? 'none' : 'block';
+  mutedIcon.style.display = isMuted ? 'block' : 'none';
 }
 
 function updateUI() {
-playIcon.style.display = isPlaying ? 'none' : 'block';
-pauseIcon.style.display = isPlaying ? 'block' : 'none';
-// update station card buttons by re-rendering
-renderStations();
+  playIcon.style.display = isPlaying ? 'none' : 'block';
+  pauseIcon.style.display = isPlaying ? 'block' : 'none';
+  renderStations();
 }
 
-// Favorites handling
 function toggleFavorite(stationId, btnEl){
-if(favorites.has(stationId)){
-favorites.delete(stationId);
-} else {
-favorites.add(stationId);
-}
-saveFavorites();
-// reflect button state
-if(btnEl){
-  const pressed = favorites.has(stationId);
-  btnEl.setAttribute('aria-pressed', pressed ? 'true' : 'false');
-  btnEl.dataset.fav = pressed ? '1' : '0';
-  // Update the heart SVG fill
-  const svg = btnEl.querySelector('svg');
-  if(svg) {
-    svg.querySelector('path').setAttribute('fill', pressed ? 'currentColor' : 'none');
+  if(favorites.has(stationId)){
+    favorites.delete(stationId);
+  } else {
+    favorites.add(stationId);
   }
-}
-// if favorites filter is active, re-render to hide/show
-renderStations();
+  saveFavorites();
+  if(btnEl){
+    const pressed = favorites.has(stationId);
+    btnEl.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+    btnEl.dataset.fav = pressed ? '1' : '0';
+    const svg = btnEl.querySelector('svg');
+    if(svg) {
+      svg.querySelector('path').setAttribute('fill', pressed ? 'currentColor' : 'none');
+    }
+  }
+  renderStations();
 }
 
-// Next / Previous station based on current filtered list order
 function playNextStation(){
-const list = getFilteredStations();
-if(list.length === 0) return;
-if(!currentStation){
-playStation(list[0].id);
-return;
-}
+  const list = getFilteredStations();
+  if(list.length === 0) return;
+  if(!currentStation){
+    playStation(list[0].id);
+    return;
+  }
 
-// Decrement listener count for current station
-if (currentStation) {
-  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
-}
+  if (currentStation) {
+    listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+  }
 
-const idx = list.findIndex(s => s.id === currentStation);
-const nextIdx = (idx === -1 || idx === list.length - 1) ? 0 : idx + 1;
+  const idx = list.findIndex(s => s.id === currentStation);
+  const nextIdx = (idx === -1 || idx === list.length - 1) ? 0 : idx + 1;
 
-// Increment listener count for new station
-listenerCounts[list[nextIdx].id] = (listenerCounts[list[nextIdx].id] || 0) + 1;
+  listenerCounts[list[nextIdx].id] = (listenerCounts[list[nextIdx].id] || 0) + 1;
 
-playStation(list[nextIdx].id);
+  playStation(list[nextIdx].id);
 }
 
 function playPreviousStation(){
-const list = getFilteredStations();
-if(list.length === 0) return;
-if(!currentStation){
-playStation(list[0].id);
-return;
+  const list = getFilteredStations();
+  if(list.length === 0) return;
+  if(!currentStation){
+    playStation(list[0].id);
+    return;
+  }
+
+  if (currentStation) {
+    listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+  }
+
+  const idx = list.findIndex(s => s.id === currentStation);
+  const prevIdx = (idx <= 0) ? list.length - 1 : idx - 1;
+
+  listenerCounts[list[prevIdx].id] = (listenerCounts[list[prevIdx].id] || 0) + 1;
+
+  playStation(list[prevIdx].id);
 }
 
-// Decrement listener count for current station
-if (currentStation) {
-  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
-}
-
-const idx = list.findIndex(s => s.id === currentStation);
-const prevIdx = (idx <= 0) ? list.length - 1 : idx - 1;
-
-// Increment listener count for new station
-listenerCounts[list[prevIdx].id] = (listenerCounts[list[prevIdx].id] || 0) + 1;
-
-playStation(list[prevIdx].id);
-}
-
-// --- NEW AD SLIDER LOGIC ---
 let currentAdIndex = 0;
 const adCount = adSlides.length;
 function showNextAd() {
-currentAdIndex = (currentAdIndex + 1) % adCount;
-adSliderTrack.style.transform = `translateX(-${currentAdIndex * 100}%)`;
+  currentAdIndex = (currentAdIndex + 1) % adCount;
+  adSliderTrack.style.transform = `translateX(-${currentAdIndex * 100}%)`;
 }
 
 if (adCount > 1) {
-setInterval(showNextAd, 5000); // Change ad every 5 seconds
+  setInterval(showNextAd, 5000);
 }
 
-// --- END AD SLIDER LOGIC ---
-
-// Column count change handler
 columnCountSelect.addEventListener('change', (e) => {
   columnCount = parseInt(e.target.value, 10);
   saveColumnCount(columnCount);
@@ -1292,15 +1258,14 @@ columnCountSelect.addEventListener('change', (e) => {
   announceSR(`Changed to ${columnCount} column${columnCount > 1 ? 's' : ''}`);
 });
 
-// Event listeners
 playPauseBtn.addEventListener('click', (e) => {
-e.preventDefault();
-togglePlayPause();
+  e.preventDefault();
+  togglePlayPause();
 });
 
 muteBtn.addEventListener('click', (e) => {
-e.preventDefault();
-toggleMute();
+  e.preventDefault();
+  toggleMute();
 });
 
 prevBtn.addEventListener('click', goToPreviousPage);
@@ -1308,127 +1273,113 @@ nextBtn.addEventListener('click', goToNextPage);
 prevStationBtn.addEventListener('click', (e) => { e.preventDefault(); playPreviousStation(); });
 nextStationBtn.addEventListener('click', (e) => { e.preventDefault(); playNextStation(); });
 
-// Volume click and keyboard control
 volumeSlider.addEventListener('click', (e) => {
-const rect = volumeSlider.getBoundingClientRect();
-const x = e.clientX - rect.left;
-volume = Math.max(0, Math.min(1, x / rect.width));
-audioElement.volume = volume;
-isMuted = false;
-audioElement.muted = false;
-updateVolumeUI();
+  const rect = volumeSlider.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  volume = Math.max(0, Math.min(1, x / rect.width));
+  audioElement.volume = volume;
+  isMuted = false;
+  audioElement.muted = false;
+  updateVolumeUI();
 });
 
 volumeSlider.addEventListener('keydown', (e) => {
-if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-volume = Math.max(0, volume - 0.05);
-} else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-volume = Math.min(1, volume + 0.05);
-} else if (e.key === 'Home') {
-volume = 0;
-} else if (e.key === 'End') {
-volume = 1;
-} else if (e.key === 'PageDown') {
-volume = Math.max(0, volume - 0.1);
-} else if (e.key === 'PageUp') {
-volume = Math.min(1, volume + 0.1);
-} else {
-return;
-}
-audioElement.volume = volume;
-isMuted = false;
-audioElement.muted = false;
-updateVolumeUI();
-e.preventDefault();
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+    volume = Math.max(0, volume - 0.05);
+  } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+    volume = Math.min(1, volume + 0.05);
+  } else if (e.key === 'Home') {
+    volume = 0;
+  } else if (e.key === 'End') {
+    volume = 1;
+  } else if (e.key === 'PageDown') {
+    volume = Math.max(0, volume - 0.1);
+  } else if (e.key === 'PageUp') {
+    volume = Math.min(1, volume + 0.1);
+  } else {
+    return;
+  }
+  audioElement.volume = volume;
+  isMuted = false;
+  audioElement.muted = false;
+  updateVolumeUI();
+  e.preventDefault();
 });
 
-// Search and favorites filter
 searchInput.addEventListener('input', (e) => {
-searchTerm = e.target.value || '';
-currentPage = 0;
-renderStations();
+  searchTerm = e.target.value || '';
+  currentPage = 0;
+  renderStations();
 });
 
 favFilterBtn.addEventListener('click', () => {
-showFavoritesOnly = !showFavoritesOnly;
-favFilterBtn.setAttribute('aria-pressed', showFavoritesOnly ? 'true' : 'false');
-currentPage = 0;
-renderStations();
+  showFavoritesOnly = !showFavoritesOnly;
+  favFilterBtn.setAttribute('aria-pressed', showFavoritesOnly ? 'true' : 'false');
+  currentPage = 0;
+  renderStations();
 });
 
-// audioElement events
 audioElement.addEventListener('ended', () => {
-// Decrement listener count when playback ends
-if (currentStation) {
-  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
-}
-// automatically play next
-playNextStation();
+  if (currentStation) {
+    listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+  }
+  playNextStation();
 });
 
 audioElement.addEventListener('play', () => {
-isPlaying = true;
-updateUI();
+  isPlaying = true;
+  updateUI();
 });
 
 audioElement.addEventListener('pause', () => {
-isPlaying = false;
-updateUI();
+  isPlaying = false;
+  updateUI();
 });
 
 audioElement.addEventListener('error', () => {
-isPlaying = false;
-// Decrement listener count on error
-if (currentStation) {
-  listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
-}
-updateUI();
-const station = radioStations.find(s => s.id === currentStation);
-if(station) announceSR('Playback error for ' + station.name);
+  isPlaying = false;
+  if (currentStation) {
+    listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
+  }
+  updateUI();
+  const station = radioStations.find(s => s.id === currentStation);
+  if(station) announceSR('Playback error for ' + station.name);
 });
 
-// Handle window close/unload to decrement listener count
 window.addEventListener('beforeunload', () => {
   if (currentStation) {
     listenerCounts[currentStation] = Math.max(0, (listenerCounts[currentStation] || 0) - 1);
   }
 });
 
-// Pagination focus management helper
 function focusFirstStationIfExists(){
-const first = stationsGrid.querySelector('.station-card');
-if(first) first.focus();
+  const first = stationsGrid.querySelector('.station-card');
+  if(first) first.focus();
 }
 
-// small helper to escape HTML for safety in template strings
 function escapeHtml(unsafe){
-if(!unsafe) return '';
-return String(unsafe)
-.replace(/&/g, "&amp;")
-.replace(/</g, "&lt;")
-.replace(/>/g, "&gt;")
-.replace(/"/g, "&quot;")
-.replace(/'/g, "&#039;");
+  if(!unsafe) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-// Screen reader announcements helper
 function announceSR(message){
-srLive.textContent = '';
-setTimeout(()=> { srLive.textContent = message; }, 50);
+  srLive.textContent = '';
+  setTimeout(()=> { srLive.textContent = message; }, 50);
 }
 
-// Only simulate listener count changes for the currently playing station
 function updateListenerCounts() {
-  // Only update when there's a currently playing station
   if (!currentStation) return;
   
   const currentStationData = radioStations.find(s => s.id === currentStation);
   if (currentStationData) {
-    // Only make changes to the currently playing station
-    const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or +1
+    const change = Math.floor(Math.random() * 3) - 1;
     listenerCounts[currentStation] = Math.max(0, listenerCounts[currentStation] + change);
     
-    // Update UI element directly for better performance
     const countElement = document.querySelector(`.station-card[data-station-id="${currentStation}"] .listener-count`);
     if (countElement) {
       countElement.textContent = formatListenerCount(listenerCounts[currentStation]);
@@ -1437,26 +1388,22 @@ function updateListenerCounts() {
   }
 }
 
-// Update listener counts for currently playing station only
 setInterval(updateListenerCounts, 8000);
 
-// Initial render
 renderStations();
 
-// Expose some keyboard shortcuts for convenience
 document.addEventListener('keydown', (e) => {
-// Space when focus not in input toggles play/pause
-const activeTag = document.activeElement && document.activeElement.tagName;
-if((e.key === ' ' || e.code === 'Space') && activeTag !== 'INPUT' && activeTag !== 'TEXTAREA' && activeTag !== 'SELECT'){
-e.preventDefault();
-if(currentStation) togglePlayPause();
-} else if(e.key === 'ArrowRight' && (e.ctrlKey || e.metaKey)){
-e.preventDefault();
-playNextStation();
-} else if(e.key === 'ArrowLeft' && (e.ctrlKey || e.metaKey)){
-e.preventDefault();
-playPreviousStation();
-}
+  const activeTag = document.activeElement && document.activeElement.tagName;
+  if((e.key === ' ' || e.code === 'Space') && activeTag !== 'INPUT' && activeTag !== 'TEXTAREA' && activeTag !== 'SELECT'){
+    e.preventDefault();
+    if(currentStation) togglePlayPause();
+  } else if(e.key === 'ArrowRight' && (e.ctrlKey || e.metaKey)){
+    e.preventDefault();
+    playNextStation();
+  } else if(e.key === 'ArrowLeft' && (e.ctrlKey || e.metaKey)){
+    e.preventDefault();
+    playPreviousStation();
+  }
 });
 </script>
 </body>
