@@ -4,6 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>WeradioLive.com - Stream Your Favorite Stations</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <style>
 :root{
 --bg-1: hsl(250, 30%, 8%);
@@ -13,6 +15,7 @@
 --accent: hsl(280, 80%, 60%);
 --accent-2: hsl(180, 90%, 55%);
 --listener-bg: rgba(0, 0, 0, 0.6);
+--player-height: 80px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,7 +61,7 @@ display: block;
 }
 
 .controls-row {
-display:flex; gap:0.5rem; align-items:center;
+display:flex; gap:0.5rem; align-items:center; flex-wrap: wrap;
 }
 
 .search-input {
@@ -77,6 +80,43 @@ cursor: pointer; font-weight: 600;
 }
 .small-toggle[aria-pressed="true"] { background: var(--accent); box-shadow: 0 0 30px rgba(128,0,255,0.12); color: #0b0710; }
 
+.column-selector {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+padding: 0.5rem 0.75rem;
+border-radius: 0.5rem;
+border: 1px solid hsla(250, 20%, 20%, 0.5);
+background: var(--card-bg);
+}
+
+.column-selector-label {
+font-size: 0.875rem;
+color: var(--muted);
+white-space: nowrap;
+}
+
+.column-select {
+padding: 0.25rem 0.5rem;
+border-radius: 0.375rem;
+border: 1px solid rgba(255,255,255,0.1);
+background: rgba(255,255,255,0.05);
+color: hsl(210, 40%, 98%);
+font-weight: 600;
+cursor: pointer;
+outline: none;
+transition: all 0.2s;
+}
+
+.column-select:hover {
+background: rgba(255,255,255,0.1);
+}
+
+.column-select:focus {
+border-color: var(--accent);
+box-shadow: 0 0 0 2px rgba(128, 0, 255, 0.2);
+}
+
 .main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
 
 .section-header { margin-bottom: 1rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
@@ -85,9 +125,19 @@ cursor: pointer; font-weight: 600;
 
 .stations-grid {
 display: grid;
-grid-template-columns: repeat(8, 1fr);
 gap: 1rem;
+transition: grid-template-columns 0.3s ease;
 }
+
+/* Dynamic column classes */
+.stations-grid.cols-1 { grid-template-columns: repeat(1, 1fr); }
+.stations-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.stations-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.stations-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.stations-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.stations-grid.cols-6 { grid-template-columns: repeat(6, 1fr); }
+.stations-grid.cols-7 { grid-template-columns: repeat(7, 1fr); }
+.stations-grid.cols-8 { grid-template-columns: repeat(8, 1fr); }
 
 .navigation-buttons {
 display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;
@@ -155,7 +205,100 @@ transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 
 .station-info { padding: 0.85rem; }
 .station-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.station-genre { font-size: 0.8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.station-genre { font-size: 0.8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.5rem; }
+
+/* Social icons in station card */
+.station-social-icons {
+display: flex;
+gap: 0.4rem;
+align-items: center;
+margin-top: 0.5rem;
+flex-wrap: wrap;
+}
+
+.social-icon-link {
+width: 1.75rem;
+height: 1.75rem;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid rgba(255, 255, 255, 0.1);
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s;
+color: var(--muted);
+text-decoration: none;
+}
+
+.social-icon-link:hover {
+background: var(--accent);
+color: white;
+transform: translateY(-2px);
+box-shadow: 0 4px 12px rgba(128, 0, 255, 0.2);
+}
+
+.social-icon-link svg {
+width: 0.9rem;
+height: 0.9rem;
+}
+
+/* Stream Sponsor Badge */
+.stream-sponsor {
+margin-top: 0.75rem;
+padding: 0.5rem;
+background: linear-gradient(135deg, rgba(128, 0, 255, 0.1) 0%, rgba(64, 0, 128, 0.1) 100%);
+border: 1px solid rgba(128, 0, 255, 0.2);
+border-radius: 0.375rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+font-size: 0.7rem;
+transition: all 0.2s;
+}
+
+.stream-sponsor:hover {
+background: linear-gradient(135deg, rgba(128, 0, 255, 0.15) 0%, rgba(64, 0, 128, 0.15) 100%);
+border-color: rgba(128, 0, 255, 0.3);
+}
+
+.sponsor-icon {
+width: 1.25rem;
+height: 1.25rem;
+display: flex;
+align-items: center;
+justify-content: center;
+background: var(--accent);
+border-radius: 50%;
+flex-shrink: 0;
+}
+
+.sponsor-icon svg {
+width: 0.75rem;
+height: 0.75rem;
+color: white;
+}
+
+.sponsor-text {
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 0.1rem;
+}
+
+.sponsor-label {
+color: var(--muted);
+font-size: 0.65rem;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.sponsor-name {
+color: hsl(210, 40%, 98%);
+font-weight: 600;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
 
 /* Listener count badge */
 .listener-count {
@@ -186,16 +329,29 @@ animation: pulse 1.5s infinite;
 }
 
 .audio-player {
-position: fixed; bottom: 0; left: 0; right: 0;
+position: fixed; 
+bottom: 0; 
+left: 0; 
+right: 0;
+height: var(--player-height);
 background: hsla(250, 25%, 12%, 0.98);
 backdrop-filter: blur(40px);
 border-top: 1px solid hsl(250, 20%, 20%);
-padding: 0.9rem; z-index: 50; display: none;
+padding: 0;
+margin: 0;
+z-index: 50; 
+display: none;
 }
 .audio-player.active { display: block; }
 
 .audio-player-content {
-max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 1rem;
+max-width: 1200px; 
+margin: 0 auto; 
+height: 100%;
+display: flex; 
+align-items: center; 
+gap: 1rem;
+padding: 0 1rem;
 }
 .player-controls { display: flex; align-items: center; gap: 0.6rem; }
 
@@ -232,11 +388,13 @@ border-radius: 3px; transition: width 0.1s;
 
 .ad-slider-wrapper {
 position: fixed;
-bottom: 78px;
+bottom: var(--player-height);
 left: 0;
 right: 0;
 z-index: 45;
 display: none;
+margin: 0;
+padding: 0;
 }
 .ad-slider-wrapper.active {
 display: block;
@@ -244,16 +402,19 @@ display: block;
 .ad-slider-container {
 max-width: 1200px;
 margin: 0 auto;
-height: 160px;
+height: 100%;
 background: var(--card-bg);
-border-radius: 0.5rem;
 overflow: hidden;
 position: relative;
+padding: 0;
+border-radius: 0;
 }
 .ad-slider-track {
 display: flex;
 height: 100%;
-transition: transform 0.5s ease-in-out;
+transition: transform 0.8s ease-in-out;
+margin: 0;
+padding: 0;
 }
 .ad-slide {
 flex: 0 0 100%;
@@ -261,7 +422,8 @@ height: 100%;
 display: flex;
 align-items: center;
 justify-content: center;
-padding: 0 1rem;
+padding: 0;
+margin: 0;
 }
 .ad-slide a {
 display: flex;
@@ -271,12 +433,15 @@ align-items: center;
 justify-content: center;
 text-decoration: none;
 color: var(--muted);
+padding: 0;
+margin: 0;
 }
 .ad-slide img {
-max-height: 80%;
-width: auto;
+height: 100%;
+width: 720px;
 max-width: 100%;
-object-fit: contain;
+object-fit: cover;
+display: block;
 }
 .ad-slide a:hover {
 background: rgba(255,255,255,0.05);
@@ -314,20 +479,31 @@ text-decoration: underline;
 }
 .social-links {
 display: flex;
-gap: 1rem;
+gap: 0.75rem;
 margin-top: 1rem;
+flex-wrap: wrap;
 }
 .social-links a {
-display: inline-block;
-transition: transform 0.2s, color 0.2s;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 2.5rem;
+height: 2.5rem;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid rgba(255, 255, 255, 0.1);
+transition: all 0.2s;
+color: var(--muted);
 }
 .social-links a:hover {
 transform: translateY(-2px);
 color: white;
+background: var(--accent);
+box-shadow: 0 4px 12px rgba(128, 0, 255, 0.2);
 }
 .social-links svg {
-width: 1.25rem;
-height: 1.25rem;
+width: 1.1rem;
+height: 1.1rem;
 }
 .footer-bottom {
 max-width: 1200px;
@@ -338,22 +514,63 @@ text-align: center;
 font-size: 0.8rem;
 }
 
-@media (max-width: 1024px) {
-.stations-grid { grid-template-columns: repeat(6, 1fr); }
+/* Responsive breakpoints */
+@media (max-width: 1200px) {
+.stations-grid.cols-8 { grid-template-columns: repeat(7, 1fr); }
 }
+
+@media (max-width: 1024px) {
+.stations-grid.cols-7,
+.stations-grid.cols-8 { grid-template-columns: repeat(6, 1fr); }
+}
+
+@media (max-width: 900px) {
+.stations-grid.cols-6,
+.stations-grid.cols-7,
+.stations-grid.cols-8 { grid-template-columns: repeat(5, 1fr); }
+}
+
 @media (max-width: 768px) {
-.stations-grid { grid-template-columns: repeat(4, 1fr); }
+.stations-grid.cols-5,
+.stations-grid.cols-6,
+.stations-grid.cols-7,
+.stations-grid.cols-8 { grid-template-columns: repeat(4, 1fr); }
 .volume-control { display: none; }
-.audio-player-content { gap: 0.5rem; }
 .header-content { padding: 0.75rem; }
-.ad-slider-wrapper { bottom: 64px; padding: 0 0.75rem }
+.audio-player-content { padding: 0 0.75rem; }
+}
+
+@media (max-width: 640px) {
+.stations-grid.cols-4,
+.stations-grid.cols-5,
+.stations-grid.cols-6,
+.stations-grid.cols-7,
+.stations-grid.cols-8 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 480px) {
+.stations-grid.cols-3,
+.stations-grid.cols-4,
+.stations-grid.cols-5,
+.stations-grid.cols-6,
+.stations-grid.cols-7,
+.stations-grid.cols-8 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 420px) {
-.stations-grid { grid-template-columns: repeat(2, 1fr); }
 .search-input { min-width: 120px; }
 .header-content { flex-direction: column; align-items:stretch; gap:0.5rem; }
 .controls-row { justify-content: flex-end; }
+}
+
+@media (max-width: 360px) {
+.stations-grid.cols-2,
+.stations-grid.cols-3,
+.stations-grid.cols-4,
+.stations-grid.cols-5,
+.stations-grid.cols-6,
+.stations-grid.cols-7,
+.stations-grid.cols-8 { grid-template-columns: repeat(1, 1fr); }
 }
 </style>
 </head>
@@ -370,7 +587,20 @@ font-size: 0.8rem;
 </div>
 </div>
 <div class="controls-row" role="region" aria-label="Search and filters">
-<input id="searchInput" class="search-input" type="search" placeholder="Search stations" aria-label="Search stations">
+<input id="searchInput" class="search-input" type="search" placeholder="Search station name or location" aria-label="Search stations">
+<div class="column-selector">
+<label class="column-selector-label" for="columnCount">Columns:</label>
+<select id="columnCount" class="column-select" aria-label="Select number of columns">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8" selected>8</option>
+</select>
+</div>
 <button id="favFilterBtn" class="small-toggle" aria-pressed="false" title="Show favorites only">♥ Favorites</button>
 </div>
 </div>
@@ -387,7 +617,7 @@ font-size: 0.8rem;
 </div>
 </div>
 
-<div class="stations-grid" id="stationsGrid" aria-live="polite"></div>
+<div class="stations-grid cols-8" id="stationsGrid" aria-live="polite"></div>
 
 <div class="navigation-buttons" aria-label="Stations pagination">
 <button class="nav-button" id="prevBtn" disabled>Previous</button>
@@ -410,14 +640,26 @@ font-size: 0.8rem;
 <h3>Follow Us</h3>
 <p>Stay connected on social media:</p>
 <div class="social-links">
-<a href="#" aria-label="Twitter">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-</a>
-<a href="#" aria-label="Facebook">
+<a href="#" aria-label="Facebook" title="Facebook">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4z"/></svg>
 </a>
-<a href="#" aria-label="Instagram">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.217.598 1.77.938 1.144.673 1.833 1.91.962 3.821h-2.14c-.722-1.353-2.138-2.043-3.69-2.043-3.033 0-4.636 2.42-4.636 5.432 0 3.012 1.603 5.433 4.636 5.433 1.552 0 2.968-.69 3.69-2.043h2.14c.87 1.91.182 3.148-.962 3.821-.553.34-1.11.684-1.77.938-.638.248-1.363.415-2.428.465-1.066.05-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.217-2.428-.465-.66-.254-1.217-.598-1.77-.938-1.144-.673-1.833-1.91-.962-3.821h2.14c.722 1.353 2.138 2.043 3.69 2.043 3.033 0 4.636-2.42 4.636-5.433 0-3.012-1.603-5.432-4.636-5.432-1.552 0-2.968.69-3.69-2.043H2.213c-.87-1.91-.182-3.148.962-3.821.553.34 1.11-.684 1.77-.938.638.248 1.363.415 2.428.465C8.944 2.01 9.283 2 12 2z"/></svg>
+<a href="#" aria-label="Twitter" title="Twitter">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+</a>
+<a href="#" aria-label="Instagram" title="Instagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+</a>
+<a href="#" aria-label="WhatsApp" title="WhatsApp">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+<a href="#" aria-label="YouTube" title="YouTube">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+</a>
+<a href="#" aria-label="TikTok" title="TikTok">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+</a>
+<a href="#" aria-label="Website" title="Website">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
 </a>
 </div>
 </div>
@@ -511,32 +753,33 @@ font-size: 0.8rem;
 <audio id="audioElement"></audio>
 
 <script>
-// Radio stations data (same sample data)
+// Radio stations data with all social media links
 const radioStations = [
-{ id: "1", name: "Metro FM 94.5", genre: "Lusaka Zambia", imageUrl: "public/images/metro.png", streamUrl: "https://s24.myradiostream.com:15422/listen.mp3" },
-{ id: "2", name: "ZNBC 2", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio2?mp=/1&1713357326148" },
-{ id: "3", name: "Phoenix FM", genre: "Lusaka Zambia", imageUrl: "public/images/phoenix.png", streamUrl: "https://22733.live.streamtheworld.com/RADIO_PHOENIXAAC_SC?dist=onlineradiobox" },
-{ id: "4", name: "Hot FM", genre: "Lusaka Zambia", imageUrl: "public/images/hotfm.png", streamUrl: "https://stream-170.zeno.fm/s7acbwdffv8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzN2FjYndkZmZ2OHV2IiwiaG9zdCI6InN0cmVhbS0xNzAuemVuby5mbSIsImp0aSI6IngyS2ktYnBzUWNDRF94aERBSFFyTlEiLCJpYXQiOjE3MTMzNjE5OTUsImV4cCI6MTcxMzM2MjA1NX0.nz_XBd98YdUVLfiwKxZbo7Wo2y00_vtvQsOM-dUbzfo&zttl=5&aw_0_req_lsid=1713361994801_0.3072059924445578&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
-{ id: "5", name: "Christian Voice", genre: "Lusaka Zambia", imageUrl: "public/images/rcv.png", streamUrl: "https://streaming.shoutcast.com/rcv" },
-{ id: "6", name: "Lima Radio", genre: "Lusaka Zambia", imageUrl: "public/images/lima.jpg", streamUrl: "https://zambia.weradio.live/listen/lima_fm/radio.mp3" },
-{ id: "7", name: "Laka FM", genre: "Lusaka Zambia", imageUrl: "public/images/laka.jpg", streamUrl: "https://stream-174.zeno.fm/zgvj3sab3hztv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6Z3ZqM3NhYjNoenR2IiwiaG9zdCI6InN0cmVhbS0xNzQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlVybHpyUkVzUzItY1pGVVJVcFBBTFEiLCJpYXQiOjE3Mzg2MTM2MDYsImV4cCI6MTczODYxMzY2Nn0.F7A9AnZY6ZNFCWd0kCEUk-sn3GLkFmwStvZMa3PXpAE" },
-{ id: "8", name: "Q FM", genre: "Lusaka Zambia", imageUrl: "public/images/qfm.png", streamUrl: "https://s3.myradiostream.com/:7620/;" },
-{ id: "9", name: "One Love Radio", genre: "Lusaka Zambia", imageUrl: "public/images/onelove.jpg", streamUrl: "https://usa11.fastcast4u.com/proxy/thidhzuy?mp=/1&1713383766621" },
-{ id: "10", name: "YAR FM", genre: "Kitwe Zambia", imageUrl: "public/images/yarfm.jpg", streamUrl: "https://stream-153.zeno.fm/r2bpxyfsejatv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJyMmJweHlmc2VqYXR2IiwiaG9zdCI6InN0cmVhbS0xNTMuemVuby5mbSIsImp0aSI6Ijl2X1hzNndTVFhteUtpWm12anJVa1EiLCJpYXQiOjE3MTMzNzU1MjcsImV4cCI6MTcxMzM3NTU4N30.vNF2JSd4Xcmqcdm7U26PwnTH80ZGfZCD0AlWWGyuGGE&zttl=5&aw_0_req_lsid=1713375524945_0.4258190909470052&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
-{ id: "11", name: "ZNBC 1", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio1?mp=/1" },
-{ id: "12", name: "Roots FM", genre: "Lusaka Zambia", imageUrl: "public/images/rootsfm.jpg", streamUrl: "https://stream-156.zeno.fm/s7d1prkfbxhvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzN2QxcHJrZmJ4aHZ2IiwiaG9zdCI6InN0cmVhbS0xNTYuemVuby5mbSIsImp0aSI6Ijl2eFllODltUWVlaVo0bkN0NTBMZUEiLCJpYXQiOjE3MTMzNjIxMTMsImV4cCI6MTcxMzM2MjE3M30.f397tYx1TmV6mJxNwqj1MeZ8r6xS0WVb6O2BT-2a7_8&zttl=5&adtonosListenerId=01HT7Y4CTNHBG8Y8QB2GRQQ4SN&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
-{ id: "13", name: "Kanele FM", genre: "Lundazi Zambia", imageUrl: "public/images/kanele.png", streamUrl: "https://stream-176.zeno.fm/zn26dkfnvvytv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6bjI2ZGtmbnZ2eXR2IiwiaG9zdCI6InN0cmVhbS0xNzYuemVuby5mbSIsImp0aSI6IjM4RjRtcEdCUVpDa01jNG9vT0RsVnciLCJpYXQiOjE3MTMzNjI2NzAsImV4cCI6MTcxMzM2MjczMH0.H1XHI4UPZrGQ9vKW_si1UqygBWWB7Wjy8s2DhDs63VQ&zttl=5&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
-{ id: "14", name: "ZNBC 4", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio4?mp=/1&1713358176498" },
-{ id: "15", name: "Rovert Online Radio", genre: "Online Zambia", imageUrl: "public/images/rovert.png", streamUrl: "https://streaming.relevantmediaservices.com:8004/stream" },
-{ id: "16", name: "Zamcom Radio ", genre: "Lusaka Zambia", imageUrl: "public/images/zamcom.jpg", streamUrl: "https://stream-172.zeno.fm/boxjrzkyo6jvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJib3hqcnpreW82anZ2IiwiaG9zdCI6InN0cmVhbS0xNzIuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ii1LS3ZNZl9iU2hhV1JOUmwwbUhxTFEiLCJpYXQiOjE3MjE5MjA0NTYsImV4cCI6MTcyMTkyMDUxNn0.-sy3IVP-5Bh-7TAydBn5EDlcijdmGHg_ise10s1XvTU" },
-{ id: "17", name: "Radio Mano", genre: "Kasama Zambia", imageUrl: "public/images/mano.jpg", streamUrl: "https://stream-176.zeno.fm/ykxzsne4zkvuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5a3h6c25lNHprdnV2IiwiaG9zdCI6InN0cmVhbS0xNzYuemVuby5mbSIsImp0aSI6IndEN1otWWZ3U3dTUE8teEtzeXVDRGciLCJpYXQiOjE3MTMzODcwNDEsImV4cCI6MTcxMzM4NzEwMX0.ClxC7SMH1NzqOaoKkHuRTikWnlmBpYaH3hxPaN_ulXw&zttl=5&adtonosListenerId=01HVPX5NVX44JD4MJP238X6ESP&aw_0_req_lsid=fc922dabea8d0edf4124b5a3691d18e1&an-uid=1253802568230973136&mm-uid=af1d6620-2adf-4400-9ce4-0567c5dcfae5&dot-uid=0a67220400a3cb44ed69d4e4&triton-uid=cookie%3Ad7858047-5e69-4938-b7dc-4442bce32efc&amb-uid=4022064765230720136&dbm-uid=CAESEBiPkcWmRqDZHwIJNvMqWfw&cto-uid=5cfdec82-75ec-46cd-97ef-91743852881c-66202af4-5553&bsw-uid=417a1b17-c758-4bb5-8b19-16f8986a21c5&dyn-uid=4303398016732672596&ttd-uid=3f9dabbb-6dd3-4a68-afb4-23c31d01f7cb" },
-{ id: "18", name: "I am Catholic Radio", genre: "Online Zambia", imageUrl: "public/images/catholic.jpg", streamUrl: "https://ec4.yesstreaming.net:2015/stream" },
-{ id: "19", name: "Iwave Radio", genre: "Chingola Zambia", imageUrl: "public/images/iwave.jpg", streamUrl: "https://s47.myradiostream.com/:9934/listen.mp3/;" },
-{ id: "20", name: "ITT Radio", genre: "Itezhi tezhi Zambia", imageUrl: "public/images/itt.jpg", streamUrl: "https://stream-171.zeno.fm/srnxstft6rhvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzcm54c3RmdDZyaHZ2IiwiaG9zdCI6InN0cmVhbS0xNzEuemVuby5mbSIsImp0aSI6Ikx2dDhpb0hIUkpXOEhhMmJUSzc5MXciLCJpYXQiOjE3MTM1MDcwMjUsImV4cCI6MTcxMzUwNzA4NX0.gdzP_7Hgkfv8hH2whgvbJcKmtvO_18ByUG67XAyYxNg&zttl=5" },
-{ id: "21", name: "Mwami FM", genre: "Zambia", imageUrl: "public/images/mwami.jpg", streamUrl: "https://stream-151.zeno.fm/63ae8ksgns8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI2M2FlOGtzZ25zOHV2IiwiaG9zdCI6InN0cmVhbS0xNTEuemVuby5mbSIsImp0aSI6IlVPMmpZR01hUXY2cXAyQTkyZTk5bmciLCJpYXQiOjE3MTM1MTU2MDcsImV4cCI6MTcxMzUxNTY2N30.wYxXC5c2jrtGO6x-ARV4Ucqmh8zKWRuBMDYS3uPYwKU&zttl=5" },
-{ id: "22", name: "Megarock FM", genre: "Zambia", imageUrl: "public/images/megarock.png", streamUrl: "https://stream-154.zeno.fm/3t4x1nxtff9uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiIzdDR4MW54dGZmOXV2IiwiaG9zdCI6InN0cmVhbS0xNTQuemVuby5mbSIsImp0aSI6IkxLV3pkc3Y5VEJlTmpQelV0cEoxbVEiLCJpYXQiOjE3MTM1MTU4NTgsImV4cCI6MTcxMzUxNTkxOH0.wagIydV8rcuy2zVLuXIMJBHka7ZgYFBcOXFC9Gbt1Tg&zttl=5" },
-{ id: "23", name: "South Power Radio", genre: "Choma Zambia", imageUrl: "public/images/southpower.png", streamUrl: "https://stream-152.zeno.fm/yuzn5ufqvy8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5dXpuNXVmcXZ5OHV2IiwiaG9zdCI6InN0cmVhbS0xNTIuemVuby5mbSIsImp0aSI6InBQVjc5T1NKUlhHVHB4M1FOMVpUQlEiLCJpYXQiOjE3MTMzNzY2NDcsImV4cCI6MTcxMzM3NjcwN30.OXmRVrxk_dNmc8ubYgn1aYqRO-r2nV6YHYJp5sHTK6I&zttl=5&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa" },
-
+{ id: "1", name: "Metro FM 94.5", genre: "Lusaka Zambia", imageUrl: "public/images/metro.png", streamUrl: "https://s24.myradiostream.com:15422/listen.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/metrofm", twitter: "https://twitter.com/metrofm", instagram: "https://instagram.com/metrofm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@metrofm", tiktok: "https://tiktok.com/@metrofm", website: "https://metrofm.co.zm" } },
+{ id: "2", name: "ZNBC 2", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio2?mp=/1&1713357326148", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@znbc", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
+{ id: "3", name: "Phoenix FM", genre: "Lusaka Zambia", imageUrl: "public/images/phoenix.png", streamUrl: "https://22733.live.streamtheworld.com/RADIO_PHOENIXAAC_SC?dist=onlineradiobox", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/phoenixfm", twitter: "https://twitter.com/phoenixfm", instagram: "https://instagram.com/phoenixfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@phoenixfm", tiktok: "https://tiktok.com/@phoenixfm", website: "https://phoenixfm.co.zm" } },
+{ id: "4", name: "Hot FM", genre: "Lusaka Zambia", imageUrl: "public/images/hotfm.png", streamUrl: "https://stream-170.zeno.fm/s7acbwdffv8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzN2FjYndkZmZ2OHV2IiwiaG9zdCI6InN0cmVhbS0xNzAuemVuby5mbSIsImp0aSI6IngyS2ktYnBzUWNDRF94aERBSFFyTlEiLCJpYXQiOjE3MTMzNjE5OTUsImV4cCI6MTcxMzM2MjA1NX0.nz_XBd98YdUVLfiwKxZbo7Wo2y00_vtvQsOM-dUbzfo&zttl=5&aw_0_req_lsid=1713361994801_0.3072059924445578&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/hotfm", twitter: "https://twitter.com/hotfm", instagram: "https://instagram.com/hotfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@hotfm", tiktok: "https://tiktok.com/@hotfm", website: "https://hotfm.co.zm" } },
+{ id: "5", name: "Christian Voice", genre: "Lusaka Zambia", imageUrl: "public/images/rcv.png", streamUrl: "https://streaming.shoutcast.com/rcv", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/christianvoice", twitter: "https://twitter.com/christianvoice", instagram: "https://instagram.com/christianvoice", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@christianvoice", tiktok: "https://tiktok.com/@christianvoice", website: "https://christianvoice.co.zm" } },
+{ id: "6", name: "Lima Radio", genre: "Lusaka Zambia", imageUrl: "public/images/lima.jpg", streamUrl: "https://zambia.weradio.live/listen/lima_fm/radio.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/limaradio", twitter: "https://twitter.com/limaradio", instagram: "https://instagram.com/limaradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@limaradio", tiktok: "https://tiktok.com/@limaradio", website: "https://limaradio.co.zm" } },
+{ id: "7", name: "Laka FM", genre: "Lusaka Zambia", imageUrl: "public/images/laka.jpg", streamUrl: "https://stream-174.zeno.fm/zgvj3sab3hztv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6Z3ZqM3NhYjNoenR2IiwiaG9zdCI6InN0cmVhbS0xNzQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlVybHpyUkVzUzItY1pGVVJVcFBBTFEiLCJpYXQiOjE3Mzg2MTM2MDYsImV4cCI6MTczODYxMzY2Nn0.F7A9AnZY6ZNFCWd0kCEUk-sn3GLkFmwStvZMa3PXpAE", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/lakafm", twitter: "https://twitter.com/lakafm", instagram: "https://instagram.com/lakafm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@lakafm", tiktok: "https://tiktok.com/@lakafm", website: "https://lakafm.co.zm" } },
+{ id: "8", name: "Q FM", genre: "Lusaka Zambia", imageUrl: "public/images/qfm.png", streamUrl: "https://s3.myradiostream.com/:7620/;", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/qfm", twitter: "https://twitter.com/qfm", instagram: "https://instagram.com/qfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@qfm", tiktok: "https://tiktok.com/@qfm", website: "https://qfm.co.zm" } },
+{ id: "9", name: "One Love Radio", genre: "Lusaka Zambia", imageUrl: "public/images/onelove.jpg", streamUrl: "https://usa11.fastcast4u.com/proxy/thidhzuy?mp=/1&1713383766621", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/oneloveradio", twitter: "https://twitter.com/oneloveradio", instagram: "https://instagram.com/oneloveradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@oneloveradio", tiktok: "https://tiktok.com/@oneloveradio", website: "https://oneloveradio.co.zm" } },
+{ id: "10", name: "YAR FM", genre: "Kitwe Zambia", imageUrl: "public/images/yarfm.jpg", streamUrl: "https://stream-153.zeno.fm/r2bpxyfsejatv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJyMmJweHlmc2VqYXR2IiwiaG9zdCI6InN0cmVhbS0xNTMuemVuby5mbSIsImp0aSI6Ijl2X1hzNndTVFhteUtpWm12anJVa1EiLCJpYXQiOjE3MTMzNzU1MjcsImV4cCI6MTcxMzM3NTU4N30.vNF2JSd4Xcmqcdm7U26PwnTH80ZGfZCD0AlWWGyuGGE&zttl=5&aw_0_req_lsid=1713375524945_0.4258190909470052&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/yarfm", twitter: "https://twitter.com/yarfm", instagram: "https://instagram.com/yarfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@yarfm", tiktok: "https://tiktok.com/@yarfm", website: "https://yarfm.co.zm" } },
+{ id: "11", name: "ZNBC 1", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio1?mp=/1", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@znbc", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
+{ id: "12", name: "Roots FM", genre: "Lusaka Zambia", imageUrl: "public/images/rootsfm.jpg", streamUrl: "https://stream-156.zeno.fm/s7d1prkfbxhvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzN2QxcHJrZmJ4aHZ2IiwiaG9zdCI6InN0cmVhbS0xNTYuemVuby5mbSIsImp0aSI6Ijl2eFllODltUWVlaVo0bkN0NTBMZUEiLCJpYXQiOjE3MTMzNjIxMTMsImV4cCI6MTcxMzM2MjE3M30.f397tYx1TmV6mJxNwqj1MeZ8r6xS0WVb6O2BT-2a7_8&zttl=5&adtonosListenerId=01HT7Y4CTNHBG8Y8QB2GRQQ4SN&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/rootsfm", twitter: "https://twitter.com/rootsfm", instagram: "https://instagram.com/rootsfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@rootsfm", tiktok: "https://tiktok.com/@rootsfm", website: "https://rootsfm.co.zm" } },
+{ id: "13", name: "Kanele FM", genre: "Lundazi Zambia", imageUrl: "public/images/kanele.png", streamUrl: "https://stream-176.zeno.fm/zn26dkfnvvytv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6bjI2ZGtmbnZ2eXR2IiwiaG9zdCI6InN0cmVhbS0xNzYuemVuby5mbSIsImp0aSI6IjM4RjRtcEdCUVpDa01jNG9vT0RsVnciLCJpYXQiOjE3MTMzNjI2NzAsImV4cCI6MTcxMzM2MjczMH0.H1XHI4UPZrGQ9vKW_si1UqygBWWB7Wjy8s2DhDs63VQ&zttl=5&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/kanelefm", twitter: "https://twitter.com/kanelefm", instagram: "https://instagram.com/kanelefm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@kanelefm", tiktok: "https://tiktok.com/@kanelefm", website: "https://kanelefm.co.zm" } },
+{ id: "14", name: "ZNBC 4", genre: "Lusaka Zambia", imageUrl: "public/images/znbc.png", streamUrl: "https://eu6.fastcast4u.com/proxy/radio4?mp=/1&1713358176498", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/znbc", twitter: "https://twitter.com/znbc", instagram: "https://instagram.com/znbc", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@znbc", tiktok: "https://tiktok.com/@znbc", website: "https://znbc.co.zm" } },
+{ id: "15", name: "Rovert Online Radio", genre: "Online Zambia", imageUrl: "public/images/rovert.png", streamUrl: "https://streaming.relevantmediaservices.com:8004/stream", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/rovert", twitter: "https://twitter.com/rovert", instagram: "https://instagram.com/rovert", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@rovert", tiktok: "https://tiktok.com/@rovert", website: "https://rovert.co.zm" } },
+{ id: "16", name: "Zamcom Radio ", genre: "Lusaka Zambia", imageUrl: "public/images/zamcom.jpg", streamUrl: "https://stream-172.zeno.fm/boxjrzkyo6jvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJib3hqcnpreW82anZ2IiwiaG9zdCI6InN0cmVhbS0xNzIuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ii1LS3ZNZl9iU2hhV1JOUmwwbUhxTFEiLCJpYXQiOjE3MjE5MjA0NTYsImV4cCI6MTcyMTkyMDUxNn0.-sy3IVP-5Bh-7TAydBn5EDlcijdmGHg_ise10s1XvTU", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/zamcom", twitter: "https://twitter.com/zamcom", instagram: "https://instagram.com/zamcom", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@zamcom", tiktok: "https://tiktok.com/@zamcom", website: "https://zamcom.co.zm" } },
+{ id: "17", name: "Radio Mano", genre: "Kasama Zambia", imageUrl: "public/images/mano.jpg", streamUrl: "https://stream-176.zeno.fm/ykxzsne4zkvuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5a3h6c25lNHprdnV2IiwiaG9zdCI6InN0cmVhbS0xNzYuemVuby5mbSIsImp0aSI6IndEN1otWWZ3U3dTUE8teEtzeXVDRGciLCJpYXQiOjE3MTMzODcwNDEsImV4cCI6MTcxMzM4NzEwMX0.ClxC7SMH1NzqOaoKkHuRTikWnlmBpYaH3hxPaN_ulXw&zttl=5&adtonosListenerId=01HVPX5NVX44JD4MJP238X6ESP&aw_0_req_lsid=fc922dabea8d0edf4124b5a3691d18e1&an-uid=1253802568230973136&mm-uid=af1d6620-2adf-4400-9ce4-0567c5dcfae5&dot-uid=0a67220400a3cb44ed69d4e4&triton-uid=cookie%3Ad7858047-5e69-4938-b7dc-4442bce32efc&amb-uid=4022064765230720136&dbm-uid=CAESEBiPkcWmRqDZHwIJNvMqWfw&cto-uid=5cfdec82-75ec-46cd-97ef-91743852881c-66202af4-5553&bsw-uid=417a1b17-c758-4bb5-8b19-16f8986a21c5&dyn-uid=4303398016732672596&ttd-uid=3f9dabbb-6dd3-4a68-afb4-23c31d01f7cb", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/radiomano", twitter: "https://twitter.com/radiomano", instagram: "https://instagram.com/radiomano", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@radiomano", tiktok: "https://tiktok.com/@radiomano", website: "https://radiomano.co.zm" } },
+{ id: "18", name: "I am Catholic Radio", genre: "Online Zambia", imageUrl: "public/images/catholic.jpg", streamUrl: "https://ec4.yesstreaming.net:2015/stream", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/catholicradio", twitter: "https://twitter.com/catholicradio", instagram: "https://instagram.com/catholicradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@catholicradio", tiktok: "https://tiktok.com/@catholicradio", website: "https://catholicradio.co.zm" } },
+{ id: "19", name: "Iwave Radio", genre: "Chingola Zambia", imageUrl: "public/images/iwave.jpg", streamUrl: "https://s47.myradiostream.com/:9934/listen.mp3/;", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/iwaveradio", twitter: "https://twitter.com/iwaveradio", instagram: "https://instagram.com/iwaveradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@iwaveradio", tiktok: "https://tiktok.com/@iwaveradio", website: "https://iwaveradio.co.zm" } },
+{ id: "20", name: "ITT Radio", genre: "Itezhi tezhi Zambia", imageUrl: "public/images/itt.jpg", streamUrl: "https://stream-171.zeno.fm/srnxstft6rhvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJzcm54c3RmdDZyaHZ2IiwiaG9zdCI6InN0cmVhbS0xNzEuemVuby5mbSIsImp0aSI6Ikx2dDhpb0hIUkpXOEhhMmJUSzc5MXciLCJpYXQiOjE3MTM1MDcwMjUsImV4cCI6MTcxMzUwNzA4NX0.gdzP_7Hgkfv8hH2whgvbJcKmtvO_18ByUG67XAyYxNg&zttl=5", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/ittradio", twitter: "https://twitter.com/ittradio", instagram: "https://instagram.com/ittradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@ittradio", tiktok: "https://tiktok.com/@ittradio", website: "https://ittradio.co.zm" } },
+{ id: "21", name: "Mwami FM", genre: "Zambia", imageUrl: "public/images/mwami.jpg", streamUrl: "https://stream-151.zeno.fm/63ae8ksgns8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI2M2FlOGtzZ25zOHV2IiwiaG9zdCI6InN0cmVhbS0xNTEuemVuby5mbSIsImp0aSI6IlVPMmpZR01hUXY2cXAyQTkyZTk5bmciLCJpYXQiOjE3MTM1MTU2MDcsImV4cCI6MTcxMzUxNTY2N30.wYxXC5c2jrtGO6x-ARV4Ucqmh8zKWRuBMDYS3uPYwKU&zttl=5", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/mwamifm", twitter: "https://twitter.com/mwamifm", instagram: "https://instagram.com/mwamifm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@mwamifm", tiktok: "https://tiktok.com/@mwamifm", website: "https://mwamifm.co.zm" } },
+{ id: "22", name: "Megarock FM", genre: "Zambia", imageUrl: "public/images/megarock.png", streamUrl: "https://stream-154.zeno.fm/3t4x1nxtff9uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiIzdDR4MW54dGZmOXV2IiwiaG9zdCI6InN0cmVhbS0xNTQuemVuby5mbSIsImp0aSI6IkxLV3pkc3Y5VEJlTmpQelV0cEoxbVEiLCJpYXQiOjE3MTM1MTU4NTgsImV4cCI6MTcxMzUxNTkxOH0.wagIydV8rcuy2zVLuXIMJBHka7ZgYFBcOXFC9Gbt1Tg&zttl=5", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/megarockfm", twitter: "https://twitter.com/megarockfm", instagram: "https://instagram.com/megarockfm", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@megarockfm", tiktok: "https://tiktok.com/@megarockfm", website: "https://megarockfm.co.zm" } },
+{ id: "23", name: "South Power Radio", genre: "Choma Zambia", imageUrl: "public/images/southpower.png", streamUrl: "https://stream-152.zeno.fm/yuzn5ufqvy8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5dXpuNXVmcXZ5OHV2IiwiaG9zdCI6InN0cmVhbS0xNTIuemVuby5mbSIsImp0aSI6InBQVjc5T1NKUlhHVHB4M1FOMVpUQlEiLCJpYXQiOjE3MTMzNzY2NDcsImV4cCI6MTcxMzM3NjcwN30.OXmRVrxk_dNmc8ubYgn1aYqRO-r2nV6YHYJp5sHTK6I&zttl=5&aw_0_req_lsid=7b252a35381dd23905076da50a9bf496&an-uid=7914352081362958543&mm-uid=760065f0-d423-4d00-95f0-7aa18edf2395&dot-uid=0a4322040073783fb3692e81&triton-uid=cookie%3Ab60973ba-253d-4a1c-9751-6c2d10900ca2&amb-uid=3269603907496996616&dbm-uid=CAESEPd-bRq0QUqxN97FK99r0zQ&cto-uid=93cdd78d-0163-4e3a-97ab-2e1f56d745b5-65f0d3a6-5553&bsw-uid=e28507ed-7c29-447b-9dce-5af695c0a9e7&dyn-uid=2014621536794424065&ttd-uid=2649612b-a89c-48d3-8221-dd35af15b1fa", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/southpower", twitter: "https://twitter.com/southpower", instagram: "https://instagram.com/southpower", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@southpower", tiktok: "https://tiktok.com/@southpower", website: "https://southpower.co.zm" } },
+{ id: "24", name: "Christian Nation", genre: "Lusaka Zambia", imageUrl: "public/images/cn.png", streamUrl: "https://stream-169.zeno.fm/dcvyegbhys6uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJkY3Z5ZWdiaHlzNnV2IiwiaG9zdCI6InN0cmVhbS0xNjkuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ijh1SF9JUV9fU1EyTUwzWkNmZTNpWHciLCJpYXQiOjE3NjAxMDY2MzEsImV4cCI6MTc2MDEwNjY5MX0._Aw6XIdJqjJGkRwnkWrIfVL3rZO2nmrwwa5N-bgycyY", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/christiannation", twitter: "https://twitter.com/christiannation", instagram: "https://instagram.com/christiannation", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@christiannation", tiktok: "https://tiktok.com/@christiannation", website: "https://christiannation.co.zm" } },
+{ id: "25", name: "Intercity Radio", genre: "Lusaka Zambia", imageUrl: "public/images/intercity.png", streamUrl: "https://zambia.weradio.live/listen/maranatha_bible_church/radio.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/intercityradio", twitter: "https://twitter.com/intercityradio", instagram: "https://instagram.com/intercityradio", whatsapp: "https://wa.me/260123456789", youtube: "https://youtube.com/@intercityradio", tiktok: "https://tiktok.com/@intercityradio", website: "https://intercityradio.co.zm" } },
 ];
 
 // State
@@ -549,6 +792,7 @@ const stationsPerPage = 16;
 let favorites = loadFavorites();
 let showFavoritesOnly = false;
 let searchTerm = '';
+let columnCount = loadColumnCount();
 
 // Listener counts - start at 0 and increase for playing station
 const listenerCounts = {};
@@ -577,6 +821,7 @@ const searchInput = document.getElementById('searchInput');
 const favFilterBtn = document.getElementById('favFilterBtn');
 const visibleCount = document.getElementById('visibleCount');
 const srLive = document.getElementById('srLive');
+const columnCountSelect = document.getElementById('columnCount');
 
 // --- NEW AD SLIDER DOM ELEMENTS ---
 const adSliderWrapper = document.getElementById('adSliderWrapper');
@@ -586,6 +831,25 @@ const adSlides = document.querySelectorAll('.ad-slide');
 // Initialize
 audioElement.volume = volume;
 updateVolumeUI();
+updateGridColumns();
+
+// Utility: persist column count
+function loadColumnCount() {
+  try {
+    const saved = localStorage.getItem('weradio_column_count');
+    return saved ? parseInt(saved, 10) : 8;
+  } catch(e) {
+    return 8;
+  }
+}
+
+function saveColumnCount(count) {
+  try {
+    localStorage.setItem('weradio_column_count', String(count));
+  } catch(e) {
+    console.warn('Failed to save column count', e);
+  }
+}
 
 // Utility: persist favorites (simple set stored as array)
 function loadFavorites(){
@@ -608,6 +872,19 @@ console.warn('Failed to save favorites', e);
 }
 }
 
+// Update grid columns
+function updateGridColumns() {
+  // Remove all column classes
+  for (let i = 1; i <= 8; i++) {
+    stationsGrid.classList.remove(`cols-${i}`);
+  }
+  // Add the current column class
+  stationsGrid.classList.add(`cols-${columnCount}`);
+  
+  // Update select value
+  columnCountSelect.value = columnCount;
+}
+
 // Derived: filtered list based on search and favorites
 function getFilteredStations(){
 const term = searchTerm.trim().toLowerCase();
@@ -626,6 +903,89 @@ function formatListenerCount(count) {
     return (count / 1000).toFixed(1) + 'k';
   }
   return count.toString();
+}
+
+// Generate social icons HTML - all icons except YouTube
+function generateSocialIcons(social) {
+  if (!social) return '';
+  
+  let iconsHTML = '<div class="station-social-icons">';
+  
+  // Facebook
+  iconsHTML += `
+    <a href="${escapeHtml(social.facebook || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Facebook" onclick="event.stopPropagation()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4z"/>
+      </svg>
+    </a>
+  `;
+  
+  // Twitter
+  iconsHTML += `
+    <a href="${escapeHtml(social.twitter || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Twitter" onclick="event.stopPropagation()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+    </a>
+  `;
+  
+  // Instagram
+  iconsHTML += `
+    <a href="${escapeHtml(social.instagram || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Instagram" onclick="event.stopPropagation()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+      </svg>
+    </a>
+  `;
+  
+  // WhatsApp
+  iconsHTML += `
+    <a href="${escapeHtml(social.whatsapp || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="WhatsApp" onclick="event.stopPropagation()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+    </a>
+  `;
+  
+  // TikTok
+  iconsHTML += `
+    <a href="${escapeHtml(social.tiktok || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="TikTok" onclick="event.stopPropagation()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+      </svg>
+    </a>
+  `;
+  
+  // Website
+  iconsHTML += `
+    <a href="${escapeHtml(social.website || '#')}" target="_blank" rel="noopener noreferrer" class="social-icon-link" aria-label="Website" onclick="event.stopPropagation()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+      </svg>
+    </a>
+  `;
+  
+  iconsHTML += '</div>';
+  return iconsHTML;
+}
+
+// Generate sponsor badge HTML
+function generateSponsorBadge(sponsorName) {
+  if (!sponsorName) return '';
+  
+  return `
+    <div class="stream-sponsor">
+      <div class="sponsor-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+      </div>
+      <div class="sponsor-text">
+        <span class="sponsor-label">Sponsored by</span>
+        <span class="sponsor-name">${escapeHtml(sponsorName)}</span>
+      </div>
+    </div>
+  `;
 }
 
 // Render stations (paginated)
@@ -680,6 +1040,8 @@ visible.forEach(station => {
     <div class="station-info">
       <div class="station-name">${escapeHtml(station.name)}</div>
       <div class="station-genre">${escapeHtml(station.genre)}</div>
+      ${generateSocialIcons(station.social)}
+      ${generateSponsorBadge(station.sponsor)}
     </div>
   `;
   
@@ -922,6 +1284,14 @@ setInterval(showNextAd, 5000); // Change ad every 5 seconds
 
 // --- END AD SLIDER LOGIC ---
 
+// Column count change handler
+columnCountSelect.addEventListener('change', (e) => {
+  columnCount = parseInt(e.target.value, 10);
+  saveColumnCount(columnCount);
+  updateGridColumns();
+  announceSR(`Changed to ${columnCount} column${columnCount > 1 ? 's' : ''}`);
+});
+
 // Event listeners
 playPauseBtn.addEventListener('click', (e) => {
 e.preventDefault();
@@ -1077,7 +1447,7 @@ renderStations();
 document.addEventListener('keydown', (e) => {
 // Space when focus not in input toggles play/pause
 const activeTag = document.activeElement && document.activeElement.tagName;
-if((e.key === ' ' || e.code === 'Space') && activeTag !== 'INPUT' && activeTag !== 'TEXTAREA'){
+if((e.key === ' ' || e.code === 'Space') && activeTag !== 'INPUT' && activeTag !== 'TEXTAREA' && activeTag !== 'SELECT'){
 e.preventDefault();
 if(currentStation) togglePlayPause();
 } else if(e.key === 'ArrowRight' && (e.ctrlKey || e.metaKey)){
