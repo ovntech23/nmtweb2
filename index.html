@@ -548,29 +548,29 @@ font-size: 0.8rem;
 .stations-grid.cols-8 { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* MOBILE: FORCE 2 COLUMNS - NON NEGOTIABLE */
 @media (max-width: 480px) {
-.stations-grid.cols-3,
-.stations-grid.cols-4,
-.stations-grid.cols-5,
-.stations-grid.cols-6,
-.stations-grid.cols-7,
-.stations-grid.cols-8 { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 420px) {
-.search-input { min-width: 120px; }
-.header-content { flex-direction: column; align-items:stretch; gap:0.5rem; }
-.controls-row { justify-content: flex-end; }
-}
-
-@media (max-width: 360px) {
+.stations-grid.cols-1,
 .stations-grid.cols-2,
 .stations-grid.cols-3,
 .stations-grid.cols-4,
 .stations-grid.cols-5,
 .stations-grid.cols-6,
 .stations-grid.cols-7,
-.stations-grid.cols-8 { grid-template-columns: repeat(1, 1fr); }
+.stations-grid.cols-8 { 
+  grid-template-columns: repeat(2, 1fr) !important; 
+}
+
+/* Hide column selector on mobile */
+.column-selector {
+  display: none !important;
+}
+}
+
+@media (max-width: 420px) {
+.search-input { min-width: 120px; }
+.header-content { flex-direction: column; align-items:stretch; gap:0.5rem; }
+.controls-row { justify-content: flex-end; }
 }
 </style>
 </head>
@@ -782,11 +782,6 @@ const radioStations = [
 { id: "25", name: "Intercity Radio", genre: "Lusaka Zambia", imageUrl: "public/images/intercity.png", streamUrl: "https://zambia.weradio.live/listen/maranatha_bible_church/radio.mp3", sponsor: "WeradioLive Premium", social: { facebook: "https://facebook.com/intercityradio", twitter: "https://twitter.com/intercityradio", instagram: "https://instagram.com/intercityradio", whatsapp: "https://wa.me/260123456789", tiktok: "https://tiktok.com/@intercityradio", website: "https://intercityradio.co.zm" } },
 ];
 
-// Detect if mobile on initial load
-function isMobileDevice() {
-  return window.innerWidth <= 480;
-}
-
 // State
 let currentStation = null;
 let isPlaying = false;
@@ -837,17 +832,12 @@ audioElement.volume = volume;
 updateVolumeUI();
 updateGridColumns();
 
-// Utility: persist column count
 function loadColumnCount() {
   try {
     const saved = localStorage.getItem('weradio_column_count');
-    if (saved) {
-      return parseInt(saved, 10);
-    }
-    // Default: 2 for mobile, 8 for desktop
-    return isMobileDevice() ? 2 : 8;
+    return saved ? parseInt(saved, 10) : 8;
   } catch(e) {
-    return isMobileDevice() ? 2 : 8;
+    return 8;
   }
 }
 
